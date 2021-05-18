@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  
   "scripts": {
     "start": "cross-env NODE_ENV=development node server.js & webpack-dev-server",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,8 +14,9 @@
     "apollo-server": "^2.24.0",
     "file-loader": "^6.2.0",
     "graphiql": "^1.4.1",
-    "graphql": "experimental-stream-defer",
+    "graphql": "^15.4.0-experimental-stream-defer.1",
     "graphql-playground-react": "^1.7.27",
+    "ioredis": "^4.27.2",
     "pg": "^8.6.0",
     "postgraphile": "^4.11.0",
     "postgraphile-apollo-server": "^0.1.1",

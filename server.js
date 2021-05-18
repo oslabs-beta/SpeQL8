@@ -6,6 +6,10 @@ const {performance} = require('perf_hooks');
 const vizData = require('./src/datatest')
 console.log(vizData);
 
+// REDIS
+const Redis = require("ioredis");
+const redis = new Redis();
+
 const pgPool = new pg.Pool({
     //do this via an environment variable
     connectionString: "postgres://mqbpucbv:QmScG6BJ_w9GYAJHpTdGgWztcMT-YdVr@queenie.db.elephantsql.com:5432/mqbpucbv"
@@ -29,25 +33,22 @@ const pgPool = new pg.Pool({
     );
 
     const myPlugin = {
-      requestDidStart() {
-        console.log('Request started! Timer started');
-        const t0 = performance.now();
-        console.log(`t0 = ${t0}`);
-        return {
-          willSendResponse(){
-            console.log('Reponse sent. Timer ends here');
-            const t1 = performance.now();
-            console.log(`t0 = ${t0}`);
-            console.log(`t1 = ${t1}`);
-            const sum = t1 - t0;
-            vizData[0].distance = Math.round(sum);
-            console.log(vizData);
-            console.log(`From requestDidStart to willSendResponse took ${t1 - t0} milliseconds`)
-          },
-        }
-      },
-    };
-
+      requestDidStart(context) {
+          if (context.request.operationName!=="IntrospectionQuery") {
+          //Log the query sent by the client
+          // console.log(context.request.query);
+              // console.log(context.request.operationName);
+              return {
+                  willSendResponse(requestContext) {
+                      //Log the tracing extension data of the response
+                      let extensions = requestContext.response.extensions;
+                      redis.set(`placeholder`, extensions.tracing.duration + ' microseconds');
+                      console.log(extensions);
+                  },
+              };
+          };
+      }
+    };  
     const options = {
       
     }
@@ -60,7 +61,7 @@ const pgPool = new pg.Pool({
   
     const { url } = await server.listen();
     //commenting this out for the moment - as it says port 4000 - but we'll be accesing via port 8080
-    // console.log(`🔮 Fortunes being told at ${url}✨`);
+    console.log(`🔮 Fortunes being told at ${url}✨`);
   }
   
   main().catch(e => {
