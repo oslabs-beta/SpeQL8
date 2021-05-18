@@ -1,0 +1,46 @@
+body {
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  background-color: #09141c;
+}
+#root {
+  height: 100vh;
+}
+h1,
+h3,
+h4,
+p {
+  color: rgb(41, 185, 115);
+}
+
+.main-container {
+  height: 100vh;
+}
+
+.query-speed-box {
+  border: 2px solid red;
+  height: 150px;
+  width: 150px;
+  text-align: center;
+}
+
+p {
+  font-size: 2rem;
+}
+
+.milliseconds-display {
+  font-size: 1rem;
+}
+
+.column-chart {
+  display: inline-block;
+}
+
+.label-text {
+  color: rgb(41, 185, 115);
+}
+
+.input-div {
+  color: rgb(41, 185, 115);
+}
