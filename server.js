@@ -34,24 +34,28 @@ const pgPool = new pg.Pool({
 
     const myPlugin = {
       requestDidStart(context) {
-          if (context.request.operationName!=="IntrospectionQuery") {
-          //Log the query sent by the client
-          // console.log(context.request.query);
-              // console.log(context.request.operationName);
-              return {
-                  willSendResponse(requestContext) {
-                      //Log the tracing extension data of the response
-                      let extensions = requestContext.response.extensions;
-                      redis.set(`placeholder`, extensions.tracing.duration + ' microseconds');
-                      console.log(extensions);
-                  },
-              };
-          };
+        const clientQuery = context.request.query;
+        return {
+            async willSendResponse(requestContext) {
+                // console.log('schemaHash: ' + requestContext.schemaHash);
+                // console.log('queryHash: ' + requestContext.queryHash);
+                // console.log('operation: ' + requestContext.operation.operation);
+                //Log the tracing extension data of the response
+                const totalDuration = `${requestContext.response.extensions.tracing.duration} microseconds`;
+                const now = Date.now();
+                const hash = `${now}-${requestContext.queryHash}`
+                const timeStamp = new Date().toDateString();
+                await redis.hset(`${hash}`, 'totalDuration', `${totalDuration}`);
+                await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
+                await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
+                console.log(hash);
+            },
+        };
       }
-    };  
-    const options = {
-      
-    }
+    }; 
+
+
+    const options = {};
   
     const server = new ApolloServer({
       schema,
