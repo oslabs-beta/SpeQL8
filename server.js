@@ -1,21 +1,49 @@
 const pg = require('pg');
-const { ApolloServer } = require("apollo-server");
+const express = require('express');
+const { ApolloServer } = require("apollo-server-express");
 const { makeSchemaAndPlugin } = require("postgraphile-apollo-server");
 const { ApolloLogPlugin } = require('apollo-log');
 const {performance} = require('perf_hooks');
-const vizData = require('./src/datatest')
-console.log(vizData);
+
+// const vizData = require('./src/datatest')
+
+// // console.log(vizData);
+// const metricsModule = require('./src/metrics');
+// const queryTimes = metricsModule.queryTimes;
+
+const servicesModule = require('./src/services');
+const services = servicesModule.services;
 
 // REDIS
 const Redis = require("ioredis");
+// const { create } = require('eslint/lib/rules/*');
 const redis = new Redis();
 
-const pgPool = new pg.Pool({
+// app will load fine if services is empty
+// const services = [
+//   // {
+//   //   label: 'SWAPI',
+//   //   db_uri: 'postgres://wkydcwrh:iLsy9WNRsMy_LVodJG9Uxs9PARNbiBLb@queenie.db.elephantsql.com:5432/wkydcwrh',
+//   //   port: 4000
+//   // },
+//   // {
+//   //   label: 'Users',
+//   //   db_uri: 'postgres://dgpvvmbt:JzsdBZGdpT1l5DfQz0hfz0iT7BrKgxhr@queenie.db.elephantsql.com:5432/dgpvvmbt',
+//   //   port: 4001
+//   // },
+// ]
+
+const createNewApolloServer = (service) => {
+  const pgPool = new pg.Pool({
     //do this via an environment variable
-    connectionString: "postgres://mqbpucbv:QmScG6BJ_w9GYAJHpTdGgWztcMT-YdVr@queenie.db.elephantsql.com:5432/mqbpucbv"
+    connectionString: service.db_uri
   });
+    
+  async function startApolloServer() {
   
-  async function main() {
+  
+    const app = express();
+  
     const { schema, plugin } = await makeSchemaAndPlugin(
       pgPool,
       'public', // PostgreSQL schema to use
@@ -31,7 +59,8 @@ const pgPool = new pg.Pool({
               enhanceGraphiql: true
       }
     );
-
+  
+  
     const myPlugin = {
       requestDidStart(context) {
         const clientQuery = context.request.query;
@@ -53,8 +82,8 @@ const pgPool = new pg.Pool({
         };
       }
     }; 
-
-
+  
+  
     const options = {};
   
     const server = new ApolloServer({
@@ -63,12 +92,32 @@ const pgPool = new pg.Pool({
       tracing: true
     });
   
-    const { url } = await server.listen();
-    //commenting this out for the moment - as it says port 4000 - but we'll be accesing via port 8080
-    console.log(`🔮 Fortunes being told at ${url}✨`);
+    await server.start();
+    server.applyMiddleware({ app });
+  
+    app.use((req, res) => {
+      res.status(200);
+      res.send('Express test fired');
+      res.end();
+    })
+  
+    //const { url } = await server.listen();
+    // accesing via port 8080
+    await new Promise(resolve => app.listen({ port:service.port }, resolve));
+    console.log(`🔮 Fortunes being told at http://localhost:${service.port}${server.graphqlPath}✨`);
+    return { server, app };
   }
   
-  main().catch(e => {
-    console.error(e);
-    process.exit(1);
-  });
+  startApolloServer()
+    .catch(e => {
+      console.error(e);
+      process.exit(1);
+    });
+}
+
+
+services.forEach((service) => {
+  createNewApolloServer(service);
+})
+ 
+// exports.allanExportTest = createNewApolloServer;
