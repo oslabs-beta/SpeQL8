@@ -5,13 +5,9 @@ function schemaDisplay() {
   const [currentSchema, changeCurrentSchema] = useState("");
   const [addSchema, addAnotherSchema] = useState([]);
   const [input, inputChange] = useState("");
-
-  function handleSubmit(e) {
-    console.log(e);
-    e.preventDefault();
-    setSchema((prevState) => [...prevState, changeVal]);
-    setchangeVal("");
-  }
+  const [uriInput, changeUri] = useState("");
+  
+  
 
   function handleDelete(e) {
     fetch("", {
@@ -22,46 +18,60 @@ function schemaDisplay() {
       .catch((err) => console.log(err));
   }
 
-  function handleQuery(e) {}
+  function handleQuery(e) {
+      e.preventDefault();
+      console.log('here is the handlequery button', e);      
+      changeCurrentSchema(e.target.value);
+      //changeCurrentSchema((prevState) => prevState, input);
+
+      //const form = document.getElementById('mainForm');
+      //form.reset();
+      //add connection to graphiql here when backend is setup
+  }
+
+  function handleDbUri(e) {
+      //add uri from database hear when set up
+  }
 
   function handleAdd(e) {
-    console.log(e);
+    console.log('this is the event for the add schema buttton', e);
     e.preventDefault();
     addAnotherSchema((prevState) => [...prevState, input]);
+    //e.target.type = 'reset';
     inputChange("");
+
   }
 
-  function handleInputFormChange(e) {
+  function handleSchemaNameChange(e) {
     inputChange(e.target.value);
+    
+        
   }
 
-  function handleSchemaChange(e) {
-    console.log(e.target.type);
-    setchangeVal(e.target.value);
-  }
+//   function handleSchemaChange(e) {
+//     console.log(e.target.type);
+//     changeCurrentSchema(e.target.value);
+//   }
 
-  const schemaButtonList = addSchema.map((item, index) => {
+  const list = [];
+  //let name = '';
+  const schemaButtonList = addSchema.map((item, index) => { 
+      //console.log('this is the name of the button i am trying to retrieve', name)    
     return (
-      <li key={`key${index}`}>
-        {" "}
-        <button>{item}</button>
-      </li>
+      list.push(<li className="schemaList" key={`key${index}`}>{" "}<button value={item} onClick={handleQuery}>{item}</button></li>)    
     );
   });
 
   return (
     <div>
       <div className="inputDiv">
-      <label className="label-text" for="current-schema">
-      Current Schema:
-          </label>
+        Current Schema:
         <span
-          value={currentSchema}
+          //value={currentSchema}
           type="text"
-          name="current-schema"
           className="schemaInput"
-          onChange={handleSchemaChange}
-        /><span/>
+          //onChange={handleSchemaChange}
+        >{currentSchema}</span>
         <button onClick={handleDelete}>Delete</button>
       </div>
       <div>
@@ -70,27 +80,27 @@ function schemaDisplay() {
             <button onClick={handleAdd}>Add Schema</button>
             <ul>{schemaButtonList}</ul>
             </form> */}
-        <form>
-          <label className="label-text" for="schema-name">
+        <form id="mainForm">
+          <label className="label-text">
             Schema Name:
           </label>
           <input
             value={input}
             type="text"
-            onChange={handleInputFormChange}
+            onChange={handleSchemaNameChange}
             name="schema-name"
           ></input>
           <br></br>
-          <label className="label-text" for="db-uri">
+          <label className="label-text">
             DB URI:
           </label>
-          <input type="text" name="db-uri"></input>
+          <input value={uriInput} type="text" onChange={handleDbUri} name="db-uri"></input>
           <br></br>
           <button type="submit" onClick={handleAdd}>
             Add Schema
           </button>
         </form>
-        <ul>{schemaButtonList}</ul>
+        <ul>{list}</ul>
       </div>
 
       {/* <ul>
