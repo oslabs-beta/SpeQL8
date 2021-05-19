@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 
-function schemaDisplay() {
+const schemaDisplay = (props) => {
   //const [currentSchema, removeSchema] = useState([]);
   const [currentSchema, changeCurrentSchema] = useState("");
   const [addSchema, addAnotherSchema] = useState([]);
   const [input, inputChange] = useState("");
+
+  const { fetchURL } = props;
+  const { setFetchURL } = props;
 
   function handleSubmit(e) {
     console.log(e);
@@ -40,11 +43,16 @@ function schemaDisplay() {
     setchangeVal(e.target.value);
   }
 
+  function allanTest(){
+    setFetchURL('http://localhost:4000/graphql');
+    console.log('allanTest Clicked')
+  }
+
   const schemaButtonList = addSchema.map((item, index) => {
     return (
       <li key={`key${index}`}>
         {" "}
-        <button>{item}</button>
+        <button onClick={allanTest}>{item}</button>
       </li>
     );
   });
