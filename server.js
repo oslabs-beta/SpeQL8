@@ -34,7 +34,6 @@ const pgPool = new pg.Pool({
   
 async function startApolloServer() {
 
-
   const app = express();
 
   const { schema, plugin } = await makeSchemaAndPlugin(
@@ -52,7 +51,6 @@ async function startApolloServer() {
             enhanceGraphiql: true
     }
   );
-
 
   const myPlugin = {
     requestDidStart(context) {
@@ -107,4 +105,3 @@ startApolloServer()
     process.exit(1);
   });
 });  
-
