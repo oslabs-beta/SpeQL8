@@ -11,9 +11,23 @@ const vizData = require('./src/datatest')
 const Redis = require('ioredis');
 const redis = new Redis();
 
+const services = [
+  {
+    label: 'first',
+    db_uri: 'postgres://wkydcwrh:iLsy9WNRsMy_LVodJG9Uxs9PARNbiBLb@queenie.db.elephantsql.com:5432/wkydcwrh',
+    port: 4000
+  },
+  {
+    label: 'second',
+    db_uri: 'postgres://dgpvvmbt:JzsdBZGdpT1l5DfQz0hfz0iT7BrKgxhr@queenie.db.elephantsql.com:5432/dgpvvmbt',
+    port: 4001
+  },
+]
+
+services.forEach((service) => {
 const pgPool = new pg.Pool({
-    //do this via an environment variable
-    connectionString: "postgres://mqbpucbv:QmScG6BJ_w9GYAJHpTdGgWztcMT-YdVr@queenie.db.elephantsql.com:5432/mqbpucbv"
+  //do this via an environment variable
+  connectionString: service.db_uri
 });
   
 async function startApolloServer() {
@@ -78,8 +92,8 @@ async function startApolloServer() {
 
   //const { url } = await server.listen();
   // accesing via port 8080
-  await new Promise(resolve => app.listen({ port:4000 }, resolve));
-  console.log(`🔮 Fortunes being told at http://localhost:4000${server.graphqlPath}✨`);
+  await new Promise(resolve => app.listen({ port:service.port }, resolve));
+  console.log(`🔮 Fortunes being told at http://localhost:${service.port}${server.graphqlPath}✨`);
   return { server, app };
 }
 
@@ -88,5 +102,4 @@ startApolloServer()
     console.error(e);
     process.exit(1);
   });
-
-
+});  
