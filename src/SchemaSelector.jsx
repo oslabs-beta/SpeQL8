@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function schemaDisplay() {
+const schemaDisplay = (props) => {
   //const [currentSchema, removeSchema] = useState([]);
   const [currentSchema, changeCurrentSchema] = useState("");
   const [addSchema, addAnotherSchema] = useState([]);
@@ -8,6 +8,16 @@ function schemaDisplay() {
   const [uriInput, changeUri] = useState("");
   
   
+
+  const { fetchURL } = props;
+  const { setFetchURL } = props;
+
+  // function handleSubmit(e) {
+  //   console.log(e);
+  //   e.preventDefault();
+  //   setSchema((prevState) => [...prevState, changeVal]);
+  //   setchangeVal("");
+  // }
 
   function handleDelete(e) {
     fetch("", {
@@ -59,19 +69,34 @@ function schemaDisplay() {
       //console.log('this is the name of the button i am trying to retrieve', name)    
     return (
       list.push(<li className="schemaList" key={`key${index}`}>{" "}<button value={item} onClick={handleQuery}>{item}</button></li>)    
-    );
-  });
+  
+  // function allanTest(){
+  //   setFetchURL('http://localhost:4000/graphql');
+  //   console.log('allanTest Clicked')
+  // }
+
+  // This is from Allan, we will need to add the allan test into handleQuery
+  
+  // const schemaButtonList = addSchema.map((item, index) => {
+  //   return (
+  //     <li key={`key${index}`}>
+  //       {" "}
+  //       <button onClick={allanTest}>{item}</button>
+  //     </li>
+     );
+   });
 
   return (
     <div>
       <div className="inputDiv">
-        Current Schema:
+        {/* Current Schema: */}
         <span
           //value={currentSchema}
           type="text"
           className="schemaInput"
           //onChange={handleSchemaChange}
-        >{currentSchema}</span>
+        >Current Schema:  {currentSchema}  </span>
+        
         <button onClick={handleDelete}>Delete</button>
       </div>
       <div>
