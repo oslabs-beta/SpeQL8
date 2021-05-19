@@ -1,10 +1,11 @@
 const pg = require('pg');
-const { ApolloServer } = require("apollo-server");
+const express = require('express');
+const { ApolloServer } = require("apollo-server-express");
 const { makeSchemaAndPlugin } = require("postgraphile-apollo-server");
 const { ApolloLogPlugin } = require('apollo-log');
 const {performance} = require('perf_hooks');
 const vizData = require('./src/datatest')
-console.log(vizData);
+// console.log(vizData);
 
 // REDIS
 const Redis = require('ioredis');
@@ -15,7 +16,10 @@ const pgPool = new pg.Pool({
     connectionString: "postgres://mqbpucbv:QmScG6BJ_w9GYAJHpTdGgWztcMT-YdVr@queenie.db.elephantsql.com:5432/mqbpucbv"
 });
   
-async function main() {
+async function startApolloServer() {
+
+  const app = express();
+
   const { schema, plugin } = await makeSchemaAndPlugin(
     pgPool,
     'public', // PostgreSQL schema to use
@@ -63,14 +67,26 @@ async function main() {
     tracing: true
   });
 
-  const { url } = await server.listen();
-  //commenting this out for the moment - as it says port 4000 - but we'll be accesing via port 8080
-  console.log(`🔮 Fortunes being told at ${url}✨`);
+  await server.start();
+  server.applyMiddleware({ app });
+
+  app.use((req, res) => {
+    res.status(200);
+    res.send('Express test fired');
+    res.end();
+  })
+
+  //const { url } = await server.listen();
+  // accesing via port 8080
+  await new Promise(resolve => app.listen({ port:4000 }, resolve));
+  console.log(`🔮 Fortunes being told at http://localhost:4000${server.graphqlPath}✨`);
+  return { server, app };
 }
 
-main().catch(e => {
-  console.error(e);
-  process.exit(1);
-});
+startApolloServer()
+  .catch(e => {
+    console.error(e);
+    process.exit(1);
+  });
 
 
