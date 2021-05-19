@@ -4,7 +4,9 @@ const { ApolloServer } = require("apollo-server-express");
 const { makeSchemaAndPlugin } = require("postgraphile-apollo-server");
 const { ApolloLogPlugin } = require('apollo-log');
 const {performance} = require('perf_hooks');
+
 const vizData = require('./src/datatest')
+
 // console.log(vizData);
 
 // REDIS
@@ -32,6 +34,7 @@ const pgPool = new pg.Pool({
   
 async function startApolloServer() {
 
+
   const app = express();
 
   const { schema, plugin } = await makeSchemaAndPlugin(
@@ -49,6 +52,7 @@ async function startApolloServer() {
             enhanceGraphiql: true
     }
   );
+
 
   const myPlugin = {
     requestDidStart(context) {
@@ -103,3 +107,4 @@ startApolloServer()
     process.exit(1);
   });
 });  
+
