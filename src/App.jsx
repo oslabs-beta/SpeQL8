@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
 const regeneratorRuntime = require("regenerator-runtime");
@@ -15,17 +15,21 @@ The graphiql/packages/graphiql repo has info in the readme pertaining
 to the props that GraphiQL can accept: https://github.com/graphql/graphiql/blob/main/packages/graphiql/README.md
 */
 
-const App = () => (
+const App = () => {
+  const [fetchURL, setFetchURL] = useState('http://localhost:4001/graphql');
+
+  return (
     //this outermost div MUST have the id of 'graphiql' in order for graphiql to render properly
     <div id='graphiql' className="main-container">
+    
+
     <Heading/>
-    <SchemaSelector/>
+    <SchemaSelector fetchURL={fetchURL} setFetchURL={setFetchURL}/>
     <MetricsVisualizer/>
     <GraphiQL
     fetcher={async graphQLParams => {
       const data = await fetch(
-        // 'https://swapi-graphql.netlify.app/.netlify/functions/index',
-        'http://localhost:4000/graphql',
+        fetchURL,
         {
           method: 'POST',
           headers: {
@@ -40,6 +44,7 @@ const App = () => (
     }}
     />
   </div>
-);
+  );
+  };
 
 export default App;
