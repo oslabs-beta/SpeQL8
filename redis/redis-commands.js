@@ -31,7 +31,7 @@ const cachePlugin = {
                     const totalDuration = `${requestContext.response.extensions.tracing.duration} microseconds`;
                     const now = Date.now();
                     const hash = `${now}-${requestContext.queryHash}`
-                    const timeStamp = new Date().toDateString();
+                    const timeStamp = new Date().toString();
                     await redis.hset(`${hash}`, 'totalDuration', `${totalDuration}`);
                     await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
                     await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
