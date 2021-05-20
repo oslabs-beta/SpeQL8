@@ -17,7 +17,7 @@ redisController.serveMetrics = (req, res, next) => {
     });
 };
 
-const myPlugin = {
+const cachePlugin = {
     requestDidStart(context) {
       const clientQuery = context.request.query;
       const cq = Object.values(clientQuery);
@@ -42,4 +42,4 @@ const myPlugin = {
     }
   }; 
 
-module.exports = { redisController, myPlugin };
+module.exports = { redisController, cachePlugin };

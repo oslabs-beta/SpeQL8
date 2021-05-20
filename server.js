@@ -8,7 +8,7 @@ const { performance } = require('perf_hooks');
 const vizData = require('./src/datatest')
 
 // REDIS COMMANDS
-const { redisController, myPlugin } = require('./redis/redis-commands.js');
+const { redisController, cachePlugin } = require('./redis/redis-commands.js');
 
 const services = [
   {
@@ -53,7 +53,7 @@ async function startApolloServer() {
 
   const server = new ApolloServer({
     schema,
-    plugins: [plugin, myPlugin, ApolloLogPlugin(options)],
+    plugins: [plugin, cachePlugin, ApolloLogPlugin(options)],
     tracing: true
   });
 
