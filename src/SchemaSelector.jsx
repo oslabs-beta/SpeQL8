@@ -4,22 +4,6 @@ const services = servicesModule.services;
 // const newServerModule = require('./../newServerInstance');
 // const createNewApolloServer = newServerModule.allanExportTest;
 
-// import {allanExportTest as createNewApolloServer} from '../server';
-
-
-
-
-
-//TEST
-// const pg = require('pg');
-// // const express = require('express');
-// const { ApolloServer } = require("apollo-server-express");
-// const { makeSchemaAndPlugin } = require("postgraphile-apollo-server");
-// const { ApolloLogPlugin } = require('apollo-log');
-// const {performance} = require('perf_hooks');
-//
-
-
 const schemaDisplay = (props) => {
   //const [currentSchema, removeSchema] = useState([]);
   const [currentSchema, changeCurrentSchema] = useState("");

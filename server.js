@@ -3,7 +3,7 @@ const express = require('express');
 const { ApolloServer } = require("apollo-server-express");
 const { makeSchemaAndPlugin } = require("postgraphile-apollo-server");
 const { ApolloLogPlugin } = require('apollo-log');
-const {performance} = require('perf_hooks');
+// const {performance} = require('perf_hooks');
 const cors = require('cors');
 
 const servicesModule = require('./src/services');
@@ -13,6 +13,9 @@ const services = servicesModule.services;
 const Redis = require("ioredis");
 // const { create } = require('eslint/lib/rules/*');
 const redis = new Redis();
+
+// REDIS COMMANDS
+const { redisController, cachePlugin } = require('./redis/redis-commands.js');
 
 const createNewApolloServer = (service) => {
   const pgPool = new pg.Pool({
@@ -75,17 +78,26 @@ const createNewApolloServer = (service) => {
   
     await server.start();
     server.applyMiddleware({ app });
+    app.use(express.json());
   
-    app.use((req, res) => {
-      res.status(200);
-      res.send('Express test fired');
-      res.end();
+    app.get('/:hash', redisController.serveMetrics, (req, res) => {
+      console.log('Result from Redis cache: ');
+      console.log(res.locals);
+      return res.status(200).send(res.locals);
     })
+  
+    app.use('*', (req, res) => {
+      return res.status(404).send('404 Not Found');
+    });
+  
+    app.use((err, req, res, next) => {
+      console.log(err);
+      return res.status(500).send('Internal Server Error ' + err);
+    });
   
     //const { url } = await server.listen();
     // accesing via port 8080
     await new Promise(resolve => app.listen({ port:service.port }, resolve));
-    
     console.log(`🔮 Fortunes being told at http://localhost:${service.port}${server.graphqlPath}✨`);
     return { server, app };
   }
@@ -95,7 +107,7 @@ const createNewApolloServer = (service) => {
       console.error(e);
       process.exit(1);
     });
-}
+  };  
 
 
 services.forEach((service) => {
@@ -114,3 +126,11 @@ app.post('/newServer', (req, res) => {
 app.listen(3333, ()=> {
   console.log('listening for new APIs to spin up on port 3333')
 });
+
+
+
+
+
+
+
+ 
