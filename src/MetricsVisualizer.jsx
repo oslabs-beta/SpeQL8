@@ -11,8 +11,8 @@ const MetricsVisualizer = (props) => {
       setDataSet([...dataSet, 
         {"distance":lastQuerySpeed,
        "colors":[
-          "#ffd847",
-          "#e0a106"]}
+          "#fd1d1d",
+          "#833ab4"]}
         ])
     }
 

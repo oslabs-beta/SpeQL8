@@ -23,6 +23,7 @@ to the props that GraphiQL can accept: https://github.com/graphql/graphiql/blob/
 */
 
 const App = () => {
+  
   const [fetchURL, setFetchURL] = useState(`http://localhost:${services[0].port}/graphql`);
   const [lastQuerySpeed, setLastQuerySpeed] = useState("");
 
