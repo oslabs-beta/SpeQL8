@@ -7,6 +7,9 @@ const regeneratorRuntime = require("regenerator-runtime");
 const timeDataModule = require('./timeData');
 const timeData = timeDataModule.timeData;
 
+const servicesModule = require('./services');
+const services = servicesModule.services;
+
 import Heading from './Heading';
 import SchemaSelector from './SchemaSelector'
 import MetricsVisualizer from './MetricsVisualizer';
@@ -20,7 +23,7 @@ to the props that GraphiQL can accept: https://github.com/graphql/graphiql/blob/
 */
 
 const App = () => {
-  const [fetchURL, setFetchURL] = useState('http://localhost:4001/graphql');
+  const [fetchURL, setFetchURL] = useState(`http://localhost:${services[0].port}/graphql`);
   const [lastQuerySpeed, setLastQuerySpeed] = useState("");
 
   useEffect(() => {
