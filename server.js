@@ -4,12 +4,7 @@ const { ApolloServer } = require("apollo-server-express");
 const { makeSchemaAndPlugin } = require("postgraphile-apollo-server");
 const { ApolloLogPlugin } = require('apollo-log');
 const {performance} = require('perf_hooks');
-
-// const vizData = require('./src/datatest')
-
-// // console.log(vizData);
-// const metricsModule = require('./src/metrics');
-// const queryTimes = metricsModule.queryTimes;
+const cors = require('cors');
 
 const servicesModule = require('./src/services');
 const services = servicesModule.services;
@@ -18,20 +13,6 @@ const services = servicesModule.services;
 const Redis = require("ioredis");
 // const { create } = require('eslint/lib/rules/*');
 const redis = new Redis();
-
-// app will load fine if services is empty
-// const services = [
-//   // {
-//   //   label: 'SWAPI',
-//   //   db_uri: 'postgres://wkydcwrh:iLsy9WNRsMy_LVodJG9Uxs9PARNbiBLb@queenie.db.elephantsql.com:5432/wkydcwrh',
-//   //   port: 4000
-//   // },
-//   // {
-//   //   label: 'Users',
-//   //   db_uri: 'postgres://dgpvvmbt:JzsdBZGdpT1l5DfQz0hfz0iT7BrKgxhr@queenie.db.elephantsql.com:5432/dgpvvmbt',
-//   //   port: 4001
-//   // },
-// ]
 
 const createNewApolloServer = (service) => {
   const pgPool = new pg.Pool({
@@ -104,6 +85,7 @@ const createNewApolloServer = (service) => {
     //const { url } = await server.listen();
     // accesing via port 8080
     await new Promise(resolve => app.listen({ port:service.port }, resolve));
+    
     console.log(`🔮 Fortunes being told at http://localhost:${service.port}${server.graphqlPath}✨`);
     return { server, app };
   }
@@ -119,5 +101,16 @@ const createNewApolloServer = (service) => {
 services.forEach((service) => {
   createNewApolloServer(service);
 })
- 
-// exports.allanExportTest = createNewApolloServer;
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(cors());
+app.post('/newServer', (req, res) => {
+  console.log('inside the /newServer route')
+  console.log(req.body);
+  createNewApolloServer(req.body);
+})
+app.listen(3333, ()=> {
+  console.log('listening for new APIs to spin up on port 3333')
+});

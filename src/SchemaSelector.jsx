@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 const servicesModule = require('./services');
 const services = servicesModule.services;
-// const newServerModule = require('./../server');
+// const newServerModule = require('./../newServerInstance');
 // const createNewApolloServer = newServerModule.allanExportTest;
 
 // import {allanExportTest as createNewApolloServer} from '../server';
+
+
+
 
 
 //TEST
@@ -81,7 +84,32 @@ const schemaDisplay = (props) => {
       label: input,
       db_uri: 'postgres://wkydcwrh:iLsy9WNRsMy_LVodJG9Uxs9PARNbiBLb@queenie.db.elephantsql.com:5432/wkydcwrh' ,
       port: newPort
+    });
+    const testObj = {label: input,
+    db_uri: 'postgres://wkydcwrh:iLsy9WNRsMy_LVodJG9Uxs9PARNbiBLb@queenie.db.elephantsql.com:5432/wkydcwrh' ,
+    port: newPort}
+
+    fetch('http://localhost:3333/newServer', {
+      method: "POST",
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(testObj)
     })
+    .then((data => data.json()))
+    .then(results => {
+      console.log(results)
+    })
+  //   console.log(services);
+
+  //   const data = `${services}\nexports.services = services;`
+  //   const fs = require('bro-fs');
+  //   fs.init({type: window.TEMPORARY, bytes: 5 * 1024 * 1024})
+  //   // .then(() => fs.mkdir('dir'))
+  // .then(() => fs.writeFile('./services.js', data))
+  // .then(() => fs.readFile('./services.js'))
+  // .then(content => console.log(content)); // => "hello world"
 
     // const createNewApolloServer = (service) => {
     //   const pgPool = new pg.Pool({
