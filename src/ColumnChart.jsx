@@ -11,12 +11,36 @@ import {
 } from "./styles";
 
 
+//Use hooks here instead of the imported dataset
 
-export default function ColumnChart() {
+
+
+// export default function ColumnChart() {
+//   return (
+//     <Container className='column-chart'>
+//       <MainContainer>
+//         {vizData.map(({ distance, colors }, i) => {
+//           return (
+//             <BarChartContainer key={i}>
+//               <Number color={colors[1]}>{distance} ms</Number>
+//               <MakeBar height={distance * 2} colors={colors} />
+//             </BarChartContainer>
+//           );
+//         })}
+//       </MainContainer>
+//       <BlackLine />
+//     </Container>
+//   );
+// }
+
+const ColumnChart = (props) => {
+
+  const { dataSet } = props;
+
   return (
     <Container className='column-chart'>
       <MainContainer>
-        {vizData.map(({ distance, colors }, i) => {
+        {dataSet.map(({ distance, colors }, i) => {
           return (
             <BarChartContainer key={i}>
               <Number color={colors[1]}>{distance} ms</Number>
@@ -29,3 +53,4 @@ export default function ColumnChart() {
     </Container>
   );
 }
+export default ColumnChart;
