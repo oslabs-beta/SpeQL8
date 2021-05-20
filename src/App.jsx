@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import GraphiQL from 'graphiql';
+// export ExecuteButton from GraphiQL;
 import 'graphiql/graphiql.min.css';
 const regeneratorRuntime = require("regenerator-runtime");
 
@@ -25,13 +26,31 @@ const App = () => {
   useEffect(() => {
     const execButton = document.getElementsByClassName('execute-button');
     function clicked() {
-      console.log(timeData);
+      let durationNode;
+      const durations = document.getElementsByClassName('cm-property');
+      for (let i = 0; i < durations.length; i++) {
+        if (durations[i].innerText === "\"duration\"") {
+          console.log("found at " + i + " index")
+          durationNode = durations[i];
+          break;
+        }
+      }
+
+        const homeNode = durationNode.parentNode.childNodes;
+        console.log(homeNode[4].innerText);
+
+
+      // console.log(timeData);
       // const resultWrap = document.getElementsByClassName('resultWrap');
       // console.log(resultWrap);
+      const cmLines = document.getElementsByClassName('CodeMirror-lines');
+      const resultDiv = cmLines[2];
+      console.log(resultDiv.querySelectorAll('role'));
+
       const durationSpans = document.getElementsByClassName('cm-number');
       console.log(durationSpans[2])
       //index 1 here, as index 0 refers to the version property in extensions in the gql result
-      setLastQuerySpeed(Math.round(durationSpans[2].innerText / 1000000 ));
+      setLastQuerySpeed(Math.round(homeNode[4].innerText / 1000000 ));
       // console.log(lastQuerySpeed);
     }
 
@@ -56,6 +75,7 @@ const App = () => {
     
 
     <Heading/>
+    
     <SchemaSelector fetchURL={fetchURL} setFetchURL={setFetchURL}/>
     <MetricsVisualizer lastQuerySpeed={lastQuerySpeed}/>
     <GraphiQL
