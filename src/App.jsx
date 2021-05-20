@@ -43,12 +43,12 @@ const App = () => {
       // console.log(timeData);
       // const resultWrap = document.getElementsByClassName('resultWrap');
       // console.log(resultWrap);
-      const cmLines = document.getElementsByClassName('CodeMirror-lines');
-      const resultDiv = cmLines[2];
-      console.log(resultDiv.querySelectorAll('role'));
+      // const cmLines = document.getElementsByClassName('CodeMirror-lines');
+      // const resultDiv = cmLines[2];
+      // console.log(resultDiv.querySelectorAll('role'));
 
-      const durationSpans = document.getElementsByClassName('cm-number');
-      console.log(durationSpans[2])
+      // const durationSpans = document.getElementsByClassName('cm-number');
+      // console.log(durationSpans[2])
       //index 1 here, as index 0 refers to the version property in extensions in the gql result
       setLastQuerySpeed(Math.round(homeNode[4].innerText / 1000000 ));
       // console.log(lastQuerySpeed);
