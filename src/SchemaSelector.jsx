@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 const servicesModule = require('./services');
 const services = servicesModule.services;
+const timeDataModule = require('./timeData');
+const timeData = timeDataModule.timeData;
 // const newServerModule = require('./../newServerInstance');
 // const createNewApolloServer = newServerModule.allanExportTest;
 
@@ -62,7 +64,11 @@ const schemaDisplay = (props) => {
     console.log('this is the event for the add schema buttton', e);
     e.preventDefault();
 
+    let lastTimeData = timeData[timeData.length - 1].hash;
+    console.log(`last time data is ${lastTimeData}`);
+
     let lastAddedPort = services[services.length - 1].port;
+    console.log(`last added port is ${lastAddedPort}`)
     const newPort = lastAddedPort + 1;
     services.push({
       label: input,
