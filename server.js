@@ -8,6 +8,8 @@ const cors = require('cors');
 
 const servicesModule = require('./src/services');
 const services = servicesModule.services;
+const timeDataModule = require('./src/timeData');
+const timeData = timeDataModule.timeData;
 
 // REDIS
 const Redis = require("ioredis");
@@ -62,6 +64,18 @@ const createNewApolloServer = (service) => {
                 await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
                 await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
                 console.log(hash);
+
+                console.log(`Index of '-' is ${hash.indexOf('-')}`)
+                const sliceFrom = hash.indexOf('-');
+                console.log(`hash to search is ${hash.slice(sliceFrom + 1)}`);
+                const param = hash.slice(sliceFrom + 1);
+                timeData.push(hash);
+                console.log(`timeData = ${timeData}`)
+                // fetch(`/${param}`)
+                // .then((data => data.json()))
+                // .then(results => {
+                // console.log(results)
+                // })
             },
         };
       }
