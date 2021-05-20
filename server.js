@@ -3,15 +3,12 @@ const express = require('express');
 const { ApolloServer } = require("apollo-server-express");
 const { makeSchemaAndPlugin } = require("postgraphile-apollo-server");
 const { ApolloLogPlugin } = require('apollo-log');
-const {performance} = require('perf_hooks');
+const { performance } = require('perf_hooks');
 
 const vizData = require('./src/datatest')
 
-// console.log(vizData);
-
-// REDIS
-const Redis = require('ioredis');
-const redis = new Redis();
+// REDIS COMMANDS
+const { redisController, myPlugin } = require('./redis/redis-commands.js');
 
 const services = [
   {
@@ -52,29 +49,6 @@ async function startApolloServer() {
     }
   );
 
-  const myPlugin = {
-    requestDidStart(context) {
-      const clientQuery = context.request.query;
-      return {
-          async willSendResponse(requestContext) {
-              // console.log('schemaHash: ' + requestContext.schemaHash);
-              // console.log('queryHash: ' + requestContext.queryHash);
-              // console.log('operation: ' + requestContext.operation.operation);
-              //Log the tracing extension data of the response
-              const totalDuration = `${requestContext.response.extensions.tracing.duration} microseconds`;
-              const now = Date.now();
-              const hash = `${now}-${requestContext.queryHash}`
-              const timeStamp = new Date().toDateString();
-              await redis.hset(`${hash}`, 'totalDuration', `${totalDuration}`);
-              await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
-              await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
-              console.log(hash);
-          },
-      };
-    }
-  }; 
-
-
   const options = {};
 
   const server = new ApolloServer({
@@ -85,12 +59,22 @@ async function startApolloServer() {
 
   await server.start();
   server.applyMiddleware({ app });
+  app.use(express.json());
 
-  app.use((req, res) => {
-    res.status(200);
-    res.send('Express test fired');
-    res.end();
+  app.get('/:hash', redisController.serveMetrics, (req, res) => {
+    console.log('Result from Redis cache: ');
+    console.log(res.locals);
+    return res.status(200).send(res.locals);
   })
+
+  app.use('*', (req, res) => {
+    return res.status(404).send('404 Not Found');
+  });
+
+  app.use((err, req, res, next) => {
+    console.log(err);
+    return res.status(500).send('Internal Server Error ' + err);
+  });
 
   //const { url } = await server.listen();
   // accesing via port 8080
