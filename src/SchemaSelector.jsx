@@ -54,6 +54,20 @@ const schemaDisplay = (props) => {
       console.log('here is the handlequery button', e); 
       console.log(e.target)     
       changeCurrentSchema(e.target.value);
+      //this logs nothing - why?
+      console.log(currentSchema);
+
+      let activePort;
+      for (let i = 0; i < services.length; i++) {
+        if (services[i].label === e.target.value) {
+          console.log(services[i].label);
+          console.log(e.target.value);
+          activePort = `http://localhost:${services[i].port}/graphql`;
+          break;
+        }
+      }
+      console.log(`activeConnection is ${activePort}`)
+      setFetchURL(activePort);
       //add connection to graphiql here when backend is setup
   }
 
