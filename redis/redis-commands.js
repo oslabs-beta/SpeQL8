@@ -1,5 +1,10 @@
+// REDIS
 const Redis = require('ioredis');
 const redis = new Redis();
+
+// TIME DATA
+const timeDataModule = require('./src/timeData');
+const timeData = timeDataModule.timeData;
 
 const redisController = {};
 
@@ -36,6 +41,8 @@ const cachePlugin = {
                     await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
                     await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
                     console.log(hash);
+                    timeData.push(hash);
+                    console.log(`timeData = ${timeData}`)
                 },
             };
         } else return console.log('Introspection Query Fired');
