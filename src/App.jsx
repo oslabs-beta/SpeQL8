@@ -98,7 +98,7 @@ const App = () => {
     />
     <GraphiQL
     // defaultQuery="# Here's a sample query to get you started: \n\n{userById(id:1){\nusername\npassword\n}\n}"
-    defaultQuery="fuck off"
+    //this defaultQuery is not as easy as anticipated... see: https://github.com/graphql/graphiql/blob/fedbc6130939c1e34b29d23257aed7e858bfca0b/src/components/GraphiQL.js#L903-L931
     fetcher={async graphQLParams => {
       const data = await fetch(
         fetchURL,
