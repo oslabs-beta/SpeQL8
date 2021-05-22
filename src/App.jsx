@@ -92,6 +92,7 @@ const App = () => {
 
   return (
     //this outermost div MUST have the id of 'graphiql' in order for graphiql to render properly
+    //the defaultQuery prop currently relates to the default 'Users' DB - not currently working as intended
     <div id='graphiql' className="main-container">
     
 
@@ -100,6 +101,7 @@ const App = () => {
     <SchemaSelector fetchURL={fetchURL} setFetchURL={setFetchURL}/>
     <MetricsVisualizer lastQuerySpeed={lastQuerySpeed}/>
     <GraphiQL
+    defaultQuery="# Here's a sample query to get you started: \n\n{userById(id:1){\nusername\npassword\n}\n}"
     fetcher={async graphQLParams => {
       const data = await fetch(
         fetchURL,
