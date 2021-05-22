@@ -4,8 +4,8 @@ import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
 const regeneratorRuntime = require("regenerator-runtime");
 
-const timeDataModule = require('./timeData');
-const timeData = timeDataModule.timeData;
+// const timeDataModule = require('./timeData');
+// const timeData = timeDataModule.timeData;
 
 const servicesModule = require('./services');
 const services = servicesModule.services;
@@ -30,7 +30,7 @@ const App = () => {
   useEffect(() => {
     const execButton = document.getElementsByClassName('execute-button');
     function clicked() {
-      //console.log(timeData);
+      // console.log(timeData);
       // const resultWrap = document.getElementsByClassName('resultWrap');
       // console.log(resultWrap);
       // const durationSpans = document.getElementsByClassName('cm-number');

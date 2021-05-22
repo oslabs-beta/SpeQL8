@@ -1,3 +1,3 @@
-const timeData = ['-']
+const timeData = []
 
-exports.timeData = timeData;
+module.exports = timeData;

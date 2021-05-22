@@ -1,16 +1,26 @@
 // REDIS
 const Redis = require('ioredis');
 const redis = new Redis();
+redis.set('totalEntries', 0);
 
-// TIME DATA
-const timeDataModule = require('./src/timeData');
-const timeData = timeDataModule.timeData;
 
+// SOME FUNCTIONS
+const addEntry = async (hashCode) => {
+    await redis.incr('totalEntries');
+    const key = await redis.get('totalEntries', async (err, res) => {
+        if (err) throw err;
+        await redis.set(key, hashCode);
+    })
+    console.log(key);
+    return key;
+}
+
+// EXPRESS MIDDLEWARE
 const redisController = {};
 
-redisController.serveMetrics = (req, res, next) => {
+redisController.serveMetrics = async (req, res, next) => {
     console.log(req.params.hash);
-    const result = redis.hgetall(req.params.hash, (err, result) => {
+    const result = await redis.hgetall(req.params.hash, (err, result) => {
         if (err) {
             console.log(err);
             return next(err);
@@ -22,8 +32,10 @@ redisController.serveMetrics = (req, res, next) => {
     });
 };
 
+// APOLLO SERVER CACHEPLUGIN
 const cachePlugin = {
     requestDidStart(context) {
+      console.log('cache plugin fired');
       const clientQuery = context.request.query;
       const cq = Object.values(clientQuery);
         if (cq[11]!=='I'&&cq[12]!=='n'&&cq[13]!=='t'&&cq[14]!=='r'&&cq[15]!=='o'&&cq[16]!=='s'&&cq[17]!=='p'&&cq[18]!=='e') {
@@ -41,8 +53,9 @@ const cachePlugin = {
                     await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
                     await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
                     console.log(hash);
-                    timeData.push(hash);
-                    console.log(`timeData = ${timeData}`)
+                    addEntry(hash);
+                    // timeData.push(hash);
+                    // console.log(`timeData = ${timeData}`)
                 },
             };
         } else return console.log('Introspection Query Fired');
