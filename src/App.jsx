@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import GraphiQL from 'graphiql';
-// export ExecuteButton from GraphiQL;
 import 'graphiql/graphiql.min.css';
 const regeneratorRuntime = require("regenerator-runtime");
-
-const timeDataModule = require('./timeData');
-const timeData = timeDataModule.timeData;
 
 const servicesModule = require('./services');
 const services = servicesModule.services;
 
 import Heading from './Heading';
-import SchemaSelector from './SchemaSelector'
+import SchemaSelector from './SchemaSelector';
 import MetricsVisualizer from './MetricsVisualizer';
+import SchemaButtonsContainer from './SchemaButtonsContainer';
 
 /*
 minified CSS is currently being pulled from the graphiql module. If we want to get more
@@ -23,19 +20,31 @@ to the props that GraphiQL can accept: https://github.com/graphql/graphiql/blob/
 */
 
 const App = () => {
-  
+  const [currentSchema, changeCurrentSchema] = useState(""); 
+  //we probably want to give this the relevant data 'starter' object in services.js as its default state - (services[0].label) rather than hard coding this here
+  const [schemaList, updateSchemaList] = useState(['SWAPI','Users']);
   const [fetchURL, setFetchURL] = useState(`http://localhost:${services[0].port}/graphql`);
   const [lastQuerySpeed, setLastQuerySpeed] = useState("");
 
+  
   useEffect(() => {
+    //this conditional is required to make sure we don't overwrite the default state of fetchURL before a schema has been selected
+    if (currentSchema !== "") {
+    let gqlApiString;
+      for (let i = 0; i < services.length; i++) {
+        if (services[i].label === currentSchema) {
+          gqlApiString = `http://localhost:${services[i].port}/graphql`;
+          break;
+        }
+      }
+      //this conditional exists to get round a browser console error, it assumes that we'll have at least 1 object in services.js array
+      if (schemaList.length > 1) {
+      setFetchURL(gqlApiString);
+    }
+  }
+  
     const execButton = document.getElementsByClassName('execute-button');
     function clicked() {
-      //console.log(timeData);
-      // const resultWrap = document.getElementsByClassName('resultWrap');
-      // console.log(resultWrap);
-      // const durationSpans = document.getElementsByClassName('cm-number');
-      // console.log(durationSpans[2])
-      //console.log('this is the span for the duration button', document.querySelectorAll('[role="presentation"]:last-of-type'.innerText)
       let durationNode;
       const durations = document.getElementsByClassName('cm-property');
       for (let i = 0; i < durations.length; i++) {
@@ -45,50 +54,26 @@ const App = () => {
           break;
         }
       }
-      //   const homeNode = durationNode.parentNode.childNodes;
-      //   console.log(homeNode[4].innerText);
-      // let durationNode;
-      // const durations = document.getElementsByClassName('cm-property');
-      // for (let i = 0; i < durations.length; i++) {
-      //   if (durations[i].innerText === "\"duration\"") {
-      //     console.log("found at " + i + " index")
-      //     durationNode = durations[i];
-      //     break;
-      //   }
-      // }
-
         const homeNode = durationNode.parentNode.childNodes;
         console.log(homeNode[4].innerText);
-
-
-      // console.log(timeData);
-      // const resultWrap = document.getElementsByClassName('resultWrap');
-      // console.log(resultWrap);
-      // const cmLines = document.getElementsByClassName('CodeMirror-lines');
-      // const resultDiv = cmLines[2];
-      // console.log(resultDiv.querySelectorAll('role'));
-
-      // const durationSpans = document.getElementsByClassName('cm-number');
-      // console.log(durationSpans[2])
       //index 1 here, as index 0 refers to the version property in extensions in the gql result
       setLastQuerySpeed(Math.round(homeNode[4].innerText / 1000000 ));
-      // console.log(lastQuerySpeed);
     }
-
-    // const durationSpan = document.getElementsByClassName('cm-number');
-    // console.log(durationSpan[0]);
-
-    // function listenToLastData() {
-    //   // if (timeData.length > 1) //may not need this as we're inside useEffect
-    //   console.log(`timeData inside func: ${timeData}`);
-
-    // }
     execButton[0].addEventListener('click', clicked);
-  }, [])
+
+
+  });
 
   // console.log(`timeData outside of func: ${timeData}`)
   // console.log(Array.isArray(timeData))
 
+  function handleQuery(e) {
+    e.preventDefault();
+    console.log('here is the handlequery button', e); 
+    console.log(e.target);
+    console.log(e.target.innerText);
+    changeCurrentSchema(e.target.innerText);
+  }
 
   return (
     //this outermost div MUST have the id of 'graphiql' in order for graphiql to render properly
@@ -98,10 +83,22 @@ const App = () => {
 
     <Heading/>
     
-    <SchemaSelector fetchURL={fetchURL} setFetchURL={setFetchURL}/>
+    <SchemaSelector 
+    currentSchema={currentSchema}
+    changeCurrentSchema={changeCurrentSchema}
+    handleQuery={handleQuery} 
+    schemaList={schemaList} 
+    updateSchemaList={updateSchemaList} 
+    fetchURL={fetchURL} 
+    setFetchURL={setFetchURL}/>
     <MetricsVisualizer lastQuerySpeed={lastQuerySpeed}/>
+    <SchemaButtonsContainer
+      schemaList={schemaList}
+      handleQuery={handleQuery}
+    />
     <GraphiQL
-    defaultQuery="# Here's a sample query to get you started: \n\n{userById(id:1){\nusername\npassword\n}\n}"
+    // defaultQuery="# Here's a sample query to get you started: \n\n{userById(id:1){\nusername\npassword\n}\n}"
+    defaultQuery="fuck off"
     fetcher={async graphQLParams => {
       const data = await fetch(
         fetchURL,
