@@ -8,13 +8,6 @@ const cors = require('cors');
 
 const servicesModule = require('./src/services');
 const services = servicesModule.services;
-const timeDataModule = require('./src/timeData');
-const timeData = timeDataModule.timeData;
-
-// REDIS
-const Redis = require("ioredis");
-// const { create } = require('eslint/lib/rules/*');
-const redis = new Redis();
 
 // REDIS COMMANDS
 const { redisController, cachePlugin } = require('./redis/redis-commands.js');
@@ -46,47 +39,11 @@ const createNewApolloServer = (service) => {
       }
     );
   
-  
-    const myPlugin = {
-      requestDidStart(context) {
-        const clientQuery = context.request.query;
-        return {
-            async willSendResponse(requestContext) {
-                // console.log('schemaHash: ' + requestContext.schemaHash);
-                // console.log('queryHash: ' + requestContext.queryHash);
-                // console.log('operation: ' + requestContext.operation.operation);
-                //Log the tracing extension data of the response
-                const totalDuration = `${requestContext.response.extensions.tracing.duration} microseconds`;
-                const now = Date.now();
-                const hash = `${now}-${requestContext.queryHash}`
-                const timeStamp = new Date().toDateString();
-                await redis.hset(`${hash}`, 'totalDuration', `${totalDuration}`);
-                await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
-                await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
-                console.log(hash);
-
-                console.log(`Index of '-' is ${hash.indexOf('-')}`)
-                const sliceFrom = hash.indexOf('-');
-                console.log(`hash to search is ${hash.slice(sliceFrom + 1)}`);
-                const param = hash.slice(sliceFrom + 1);
-                timeData.push(hash);
-                console.log(`timeData = ${timeData}`)
-                // fetch(`/${param}`)
-                // .then((data => data.json()))
-                // .then(results => {
-                // console.log(results)
-                // })
-            },
-        };
-      }
-    }; 
-  
-  
     const options = {};
   
     const server = new ApolloServer({
       schema,
-      plugins: [plugin, myPlugin, ApolloLogPlugin(options)],
+      plugins: [plugin, cachePlugin, ApolloLogPlugin(options)],
       tracing: true
     });
   
