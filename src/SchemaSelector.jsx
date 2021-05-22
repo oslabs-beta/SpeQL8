@@ -1,74 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 const servicesModule = require('./services');
 const services = servicesModule.services;
-const timeDataModule = require('./timeData');
-const timeData = timeDataModule.timeData;
+//these don't work - will need another solution...
+// const timeDataModule = require('./timeData');
+// const timeData = timeDataModule.timeData;
 // const newServerModule = require('./../newServerInstance');
 // const createNewApolloServer = newServerModule.allanExportTest;
 
 const schemaDisplay = (props) => {
   // These are the react hooks
   const [currentSchema, changeCurrentSchema] = useState("");
-  const [addSchema, addAnotherSchema] = useState([]);
+  //DONE - this seems more like a method than a piece of state? Would this be better renamed to schemaList / updateSchemaList?
+  //we probably want to give this the relevant data 'starter' object in services.js as its default state - (services[0].label)
+  const [schemaList, updateSchemaList] = useState(['SWAPI','Users']);
+  // const [addSchema, addAnotherSchema] = useState([]);
   const [input, inputChange] = useState("");
   const [uriInput, changeUri] = useState("");
   const { fetchURL } = props;
   const { setFetchURL } = props;
 
+  useEffect(() => {
+    //this functionality is in useEffect rather than handleQuery due to the async nature of updating state.
+    let gqlApiString;
+      for (let i = 0; i < services.length; i++) {
+        if (services[i].label === currentSchema) {
+          gqlApiString = `http://localhost:${services[i].port}/graphql`;
+          break;
+        }
+      }
+      //this conditional exists to get round a browser console error, it assumes that we'll have at least 1 object in services.js array
+      if (schemaList.length > 1) {
+      setFetchURL(gqlApiString);
+    }
+  })
+
   // These are all the button methods:
-  
+  //TO DO: COME BACK AND REFACTOR
   function handleDelete(e) {
     //When we click the delete button we want to do the following:
-    //remove the button from the unordered list (where the name corresponds to the current schema name)
-    //TBD on which order to approach this
-    changeCurrentSchema('');
-    console.log('this is the list of button from the addschmema',addSchema[0]);
-    if (addSchema[addSchema.length - 1] === addSchema[0]) {
-      delete addSchema[0];
-    } 
-    delete addSchema[addSchema.length - 1];
-    if (input === e.target.value) {
-      delete addSchema[addSchema.length - 1];
-    }
-
-    for (let i = 0; i < addSchema.length; i ++) {
-      console.log(addSchema[i]);
-       if (addSchema[i] === currentSchema) {
-         delete addSchema[i];
-       }
-    }    
-       
-    fetch("", {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((data) => {})
-      .catch((err) => console.log(err));
-    //remove the object element form the services array, where the schema name correponds to the property of label
+    //remove the button from the schemaList (where the name corresponds to the currentSchema)
+    //reset currentSchema to none selected / blank string
+    updateSchemaList(schemaList.filter((el) => {return el !== currentSchema}));
+    //you're probably going to want to do the kill port bit before you erase the reference to currentSchema in state
      //kill the node process for the corresponding port specified in the services array where the property 
      //'label' matches the schema name - see this article: https://melvingeorge.me/blog/kill-nodejs-process-at-specific-port-linux
+    changeCurrentSchema("");
+      
+     //TBD on this fetch method...was just an idea, not sure if could work.
+    // fetch("", {
+    //   method: "DELETE",
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {})
+    //   .catch((err) => console.log(err));
+    
   }
 
+  //LINKED TO BUTTON CLICKS FROM SCHEMA BUTTONS
   function handleQuery(e) {
       e.preventDefault();
       console.log('here is the handlequery button', e); 
       console.log(e.target)     
       changeCurrentSchema(e.target.value);
-      //this logs nothing - why?
-      console.log(currentSchema);
-
-      let activePort;
-      for (let i = 0; i < services.length; i++) {
-        if (services[i].label === e.target.value) {
-          console.log(services[i].label);
-          console.log(e.target.value);
-          activePort = `http://localhost:${services[i].port}/graphql`;
-          break;
-        }
-      }
-      console.log(`activeConnection is ${activePort}`)
-      setFetchURL(activePort);
-      //add connection to graphiql here when backend is setup
   }
 
   function handleDbUri(e) {
@@ -81,20 +74,20 @@ const schemaDisplay = (props) => {
     console.log('this is the event for the add schema buttton', e);
     e.preventDefault();
 
-    let lastTimeData = timeData[timeData.length - 1].hash;
-    console.log(`last time data is ${lastTimeData}`);
+    // let lastTimeData = timeData[timeData.length - 1].hash;
+    // console.log(`last time data is ${lastTimeData}`);
 
     let lastAddedPort = services[services.length - 1].port;
     console.log(`last added port is ${lastAddedPort}`)
     const newPort = lastAddedPort + 1;
-    services.push({
+
+    const newService = {
       label: input,
       db_uri: uriInput,
       port: newPort
-    });
-    const testObj = {label: input,
-    db_uri: uriInput,
-    port: newPort}
+    };
+
+    services.push(newService);
 
     fetch('http://localhost:3333/newServer', {
       method: "POST",
@@ -102,15 +95,16 @@ const schemaDisplay = (props) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(testObj)
+      body: JSON.stringify(newService)
     })
     .then((data => data.json()))
     .then(results => {
       console.log('these are the results from the fetch request in the handle add', results)
     })  
     
-    addAnotherSchema((prevState) => [...prevState, input]);    
+    updateSchemaList((prevState) => [...prevState, input]);    
     inputChange("");
+    changeUri("");
   }
 
   function handleSchemaNameChange(e) {
@@ -119,14 +113,17 @@ const schemaDisplay = (props) => {
 
   //--------------------------------------------------------------------
   
-  // This is to iterate over each addschema which is the state for the addschema box and this also renders the buttons for addschema
+  // This is to iterate over each schemaList which is the state for the schemaList box and this also renders the buttons for schemaList
   
-  const list = [];
+  //ALLAN NOTE: Russ, I got rid of the 'list' variable. The map method returns a new array, so no need to create a new array and push into it.
+  //Have also updated the reference to it on line 163
+  // const list = [];
 
-  const schemaButtonList = addSchema.map((item, index) => { 
-      console.log(list)    
+  const schemaButtonList = schemaList.map((item, index) => { 
+    // console.log("here's the list")
+    //   console.log(list)    
     return (      
-      list.push(<li className="schemaList" key={`key${index}`}>{" "}<button id={"addSchema"} value={item} onClick={handleQuery}>{item}</button></li>)
+     <li className="schemaList" key={`key${index}`}>{" "}<button id={"schemaList"} value={item} onClick={handleQuery}>{item}</button></li>
     );
   });
   
@@ -163,7 +160,7 @@ const schemaDisplay = (props) => {
               Add Schema
             </button>
         </form>
-        <ul>{list}</ul>
+        <ul>{schemaButtonList}</ul>
       </div>
     </div>
   );
