@@ -1,7 +1,6 @@
 // REDIS
 const Redis = require('ioredis');
 const redis = new Redis();
-redis.set('totalEntries', 0);
 
 // TIME DATA
 // const timeDataModule = require('./src/timeData');
@@ -12,9 +11,8 @@ const addEntry = async (hashCode) => {
     await redis.incr('totalEntries');
     const key = await redis.get('totalEntries', async (err, res) => {
         if (err) throw err;
-        await redis.set(key, hashCode);
+        else await redis.set(res, hashCode);
     })
-    console.log(key);
     return key;
 }
 
@@ -22,14 +20,28 @@ const addEntry = async (hashCode) => {
 const redisController = {};
 
 redisController.serveMetrics = async (req, res, next) => {
-    console.log(req.params.hash);
-    const result = await redis.hgetall(req.params.hash, (err, result) => {
+    const key = await redis.get('totalEntries', (err, result) => {
         if (err) {
             console.log(err);
             return next(err);
         } else {
-            res.locals = result;
-            console.log(result);
+            return result;
+        }
+    });
+    const hashCode = await redis.get(key, (err, result) => {
+        if (err) {
+            console.log(err);
+            return next(err);
+        } else {
+            return result;
+        }
+    })
+    redis.hgetall(hashCode, (err, result) => {
+        if (err) {
+            console.log(err);
+            return next(err);
+        } else {
+            res.locals.metrics = result;
             return next();
         }
     });
@@ -55,7 +67,7 @@ const cachePlugin = {
                     await redis.hset(`${hash}`, 'totalDuration', `${totalDuration}`);
                     await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
                     await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
-                    console.log(hash);
+                    // console.log(hash);
                     addEntry(hash);
                     // timeData.push(hash);
                     // console.log(`timeData = ${timeData}`)

@@ -44,20 +44,18 @@ const App = () => {
   }
   
     const execButton = document.getElementsByClassName('execute-button');
-    function clicked() {
-      let durationNode;
-      const durations = document.getElementsByClassName('cm-property');
-      for (let i = 0; i < durations.length; i++) {
-        if (durations[i].innerText === "\"duration\"") {
-          console.log("found at " + i + " index")
-          durationNode = durations[i];
-          break;
+
+    async function clicked() {
+      const response = await fetch(
+        'http://localhost:4000/redis',
+        {
+          method: 'GET',
+          credentials: 'same-origin',
         }
-      }
-        const homeNode = durationNode.parentNode.childNodes;
-        console.log(homeNode[4].innerText);
-      //index 1 here, as index 0 refers to the version property in extensions in the gql result
-      setLastQuerySpeed(Math.round(homeNode[4].innerText / 1000000 ));
+      )
+      const responseJson = await response.json();
+      console.log(responseJson);
+      // responseJson is the metrics object, go ahead and pass it around to the components from here! :)
     }
     execButton[0].addEventListener('click', clicked);
 

@@ -49,12 +49,22 @@ const createNewApolloServer = (service) => {
   
     await server.start();
     server.applyMiddleware({ app });
+    
     app.use(express.json());
+    app.use(express.urlencoded({
+      extended: true
+    }));
+
+    const corsOptions = {
+      origin: '*',
+      optionsSuccessStatus: 200
+    }
+    app.use(cors(corsOptions));
   
-    app.get('/:hash', redisController.serveMetrics, (req, res) => {
+    app.get('/redis', redisController.serveMetrics, (req, res) => {
       console.log('Result from Redis cache: ');
-      console.log(res.locals);
-      return res.status(200).send(res.locals);
+      console.log(res.locals.metrics);
+      return res.status(200).send(res.locals.metrics);
     })
   
     app.use('*', (req, res) => {
