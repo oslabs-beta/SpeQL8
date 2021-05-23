@@ -9,29 +9,31 @@ const services = servicesModule.services;
 
 const schemaDisplay = (props) => {
   // These are the react hooks
-  const [currentSchema, changeCurrentSchema] = useState("");
-  //DONE - this seems more like a method than a piece of state? Would this be better renamed to schemaList / updateSchemaList?
-  //we probably want to give this the relevant data 'starter' object in services.js as its default state - (services[0].label)
-  const [schemaList, updateSchemaList] = useState(['SWAPI','Users']);
-  // const [addSchema, addAnotherSchema] = useState([]);
+  // const [currentSchema, changeCurrentSchema] = useState(""); 
   const [input, inputChange] = useState("");
   const [uriInput, changeUri] = useState("");
+  const {currentSchema} = props;
+  const {changeCurrentSchema} = props;
+  const { schemaList } = props;
+  const { updateSchemaList } = props;
+  const { handleQuery } = props;
+  //not getting used - delete?
   const { fetchURL } = props;
   const { setFetchURL } = props;
 
   useEffect(() => {
     //this functionality is in useEffect rather than handleQuery due to the async nature of updating state.
-    let gqlApiString;
-      for (let i = 0; i < services.length; i++) {
-        if (services[i].label === currentSchema) {
-          gqlApiString = `http://localhost:${services[i].port}/graphql`;
-          break;
-        }
-      }
-      //this conditional exists to get round a browser console error, it assumes that we'll have at least 1 object in services.js array
-      if (schemaList.length > 1) {
-      setFetchURL(gqlApiString);
-    }
+    // let gqlApiString;
+    //   for (let i = 0; i < services.length; i++) {
+    //     if (services[i].label === currentSchema) {
+    //       gqlApiString = `http://localhost:${services[i].port}/graphql`;
+    //       break;
+    //     }
+    //   }
+    //   //this conditional exists to get round a browser console error, it assumes that we'll have at least 1 object in services.js array
+    //   if (schemaList.length > 1) {
+    //   setFetchURL(gqlApiString);
+    // }
   })
 
   // These are all the button methods:
@@ -53,16 +55,15 @@ const schemaDisplay = (props) => {
     //   .then((res) => res.json())
     //   .then((data) => {})
     //   .catch((err) => console.log(err));
-    
   }
 
   //LINKED TO BUTTON CLICKS FROM SCHEMA BUTTONS
-  function handleQuery(e) {
-      e.preventDefault();
-      console.log('here is the handlequery button', e); 
-      console.log(e.target)     
-      changeCurrentSchema(e.target.value);
-  }
+  // function handleQuery(e) {
+  //     e.preventDefault();
+  //     console.log('here is the handlequery button', e); 
+  //     console.log(e.target)     
+  //     changeCurrentSchema(e.target.value);
+  // }
 
   function handleDbUri(e) {
       //add uri from database hear when set up
@@ -120,13 +121,13 @@ const schemaDisplay = (props) => {
   //Have also updated the reference to it on line 163
   // const list = [];
 
-  const schemaButtonList = schemaList.map((item, index) => { 
-    // console.log("here's the list")
-    //   console.log(list)    
-    return (      
-     <li className="schemaList" key={`key${index}`}>{" "}<button id={"schemaList"} value={item} onClick={handleQuery}>{item}</button></li>
-    );
-  });
+  // const schemaButtonList = schemaList.map((item, index) => { 
+  //   // console.log("here's the list")
+  //   //   console.log(list)    
+  //   return (      
+  //    <li className="schemaList" key={`key${index}`}>{" "}<button id={"schemaList"} value={item} onClick={handleQuery}>{item}</button></li>
+  //   );
+  // });
   
   //---------------------------------------
 
@@ -161,10 +162,12 @@ const schemaDisplay = (props) => {
               Add Schema
             </button>
         </form>
-        <ul>{schemaButtonList}</ul>
+        {/* this is going to live above the GraphiQL component and below the metrics visualizer */}
+        {/* <ul>{schemaButtonList}</ul> */}
       </div>
     </div>
   );
 }
 
+// export const SchemaButtons = () => (<ul>{schemaButtonList}</ul>);
 export default schemaDisplay;

@@ -3,6 +3,9 @@ const Redis = require('ioredis');
 const redis = new Redis();
 redis.set('totalEntries', 0);
 
+// TIME DATA
+// const timeDataModule = require('./src/timeData');
+// const timeData = timeDataModule.timeData;
 
 // SOME FUNCTIONS
 const addEntry = async (hashCode) => {
