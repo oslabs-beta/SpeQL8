@@ -6,24 +6,51 @@ const redis = new Redis();
 // const timeDataModule = require('./src/timeData');
 // const timeData = timeDataModule.timeData;
 
+// SOME FUNCTIONS
+const addEntry = async (hashCode) => {
+    await redis.incr('totalEntries');
+    const key = await redis.get('totalEntries', async (err, res) => {
+        if (err) throw err;
+        else await redis.set(res, hashCode);
+    })
+    return key;
+}
+
+// EXPRESS MIDDLEWARE
 const redisController = {};
 
-redisController.serveMetrics = (req, res, next) => {
-    console.log(req.params.hash);
-    const result = redis.hgetall(req.params.hash, (err, result) => {
+redisController.serveMetrics = async (req, res, next) => {
+    const key = await redis.get('totalEntries', (err, result) => {
         if (err) {
             console.log(err);
             return next(err);
         } else {
-            res.locals = result;
-            console.log(result);
+            return result;
+        }
+    });
+    const hashCode = await redis.get(key, (err, result) => {
+        if (err) {
+            console.log(err);
+            return next(err);
+        } else {
+            return result;
+        }
+    })
+    redis.hgetall(hashCode, (err, result) => {
+        if (err) {
+            console.log(err);
+            return next(err);
+        } else {
+            res.locals.metrics = result;
             return next();
         }
     });
 };
 
+// APOLLO SERVER CACHEPLUGIN
 const cachePlugin = {
     requestDidStart(context) {
+      console.log('cache plugin fired');
       const clientQuery = context.request.query;
       const cq = Object.values(clientQuery);
         if (cq[11]!=='I'&&cq[12]!=='n'&&cq[13]!=='t'&&cq[14]!=='r'&&cq[15]!=='o'&&cq[16]!=='s'&&cq[17]!=='p'&&cq[18]!=='e') {
@@ -40,7 +67,8 @@ const cachePlugin = {
                     await redis.hset(`${hash}`, 'totalDuration', `${totalDuration}`);
                     await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
                     await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
-                    console.log(hash);
+                    // console.log(hash);
+                    addEntry(hash);
                     // timeData.push(hash);
                     // console.log(`timeData = ${timeData}`)
                 },

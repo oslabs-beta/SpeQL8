@@ -75,6 +75,7 @@ const schemaDisplay = (props) => {
     console.log('this is the event for the add schema buttton', e);
     e.preventDefault();
 
+    // console.log(timeData);
     // let lastTimeData = timeData[timeData.length - 1].hash;
     // console.log(`last time data is ${lastTimeData}`);
 
