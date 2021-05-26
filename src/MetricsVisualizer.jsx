@@ -3,10 +3,8 @@ import ColumnChart from './ColumnChart';
 
 const MetricsVisualizer = (props) => {
 
-    // const { lastQuerySpeed } = props;
-    const lastQuerySpeed = () => {
-      
-    }
+    const { lastQuerySpeed } = props;
+    
     
     const [dataSet, setDataSet] = useState([])
 
