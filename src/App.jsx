@@ -45,7 +45,7 @@ const App = () => {
   
     const execButton = document.getElementsByClassName('execute-button');
 
-    async function clicked() {
+    async function fetcher() {
       const response = await fetch(
         'http://localhost:4000/redis',
         {
@@ -55,12 +55,16 @@ const App = () => {
       )
       const responseJson = await response.json();
       console.log(responseJson);
+    }
+
+    async function clicked() {
+      return setTimeout(fetcher, 1000);
       // responseJson is the metrics object, go ahead and pass it around to the components from here! :)
     }
     execButton[0].addEventListener('click', clicked);
 
 
-  });
+  }, []);
 
   // console.log(`timeData outside of func: ${timeData}`)
   // console.log(Array.isArray(timeData))
