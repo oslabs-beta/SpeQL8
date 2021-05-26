@@ -78,32 +78,62 @@ const createNewApolloServer = (service) => {
   
     //const { url } = await server.listen();
     // accesing via port 8080
-    await new Promise(resolve => app.listen({ port:service.port }, resolve));
+    const myApp = app.listen({ port:service.port });
     console.log(`🔮 Fortunes being told at http://localhost:${service.port}${server.graphqlPath}✨`);
-    return { server, app };
+    return myApp;
   }
   
-  startApolloServer()
+  return startApolloServer()
     .catch(e => {
       console.error(e);
       process.exit(1);
     });
   };  
 
-
-services.forEach((service) => {
-  createNewApolloServer(service);
-})
+  const myServers = [];
+  
+  services.forEach((service) => {
+    createNewApolloServer(service)
+    .then(data => myServers.push(data))
+    .catch(err => console.log(err))
+  })
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
 app.post('/newServer', (req, res) => {
   console.log('inside the /newServer route')
   console.log(req.body);
   createNewApolloServer(req.body);
 })
+
+app.delete('/deleteServer/:port', (req, res) => {
+  console.log('***IN DELETE****');
+  const myPort = req.params.port;
+  const connectionKey = `6::::${myPort}`;
+  myServers.forEach(server => {
+    if (myPort == 4000) {
+      console.log('You may not close port 4000. Graphiql must be provided an active GraphQL API (of which there will always be one running on 4000)');
+    } 
+    else if (server._connectionKey == connectionKey) {
+      // console.log(server.address().port)
+      console.log(`server on ${myPort} is about to be shut down`);
+      server.close();
+      // console.log(server.address().port)
+    }
+  })
+  // console.log(services);
+  // for(let i = 0; i < services.length; i++){
+  //   console.log(services[i].port)
+  //   if(services[i].port == myPort) {
+  //     services.splice(i, 1);
+  //   }
+  // }
+  // console.log(services);
+});
+
 app.listen(3333, ()=> {
   console.log('listening for new APIs to spin up on port 3333')
 });
