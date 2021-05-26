@@ -60,7 +60,7 @@ const cachePlugin = {
                     // console.log('queryHash: ' + requestContext.queryHash);
                     console.log('operation: ' + requestContext.errors);
                     //Log the tracing extension data of the response
-                    const totalDuration = `${requestContext.response.extensions.tracing.duration} microseconds`;
+                    const totalDuration = requestContext.response.extensions.tracing.duration;
                     const now = Date.now();
                     const hash = `${now}-${requestContext.queryHash}`
                     const timeStamp = new Date().toString();
