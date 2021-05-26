@@ -3,8 +3,8 @@ const Redis = require('ioredis');
 const redis = new Redis();
 
 // TIME DATA
-const timeDataModule = require('./src/timeData');
-const timeData = timeDataModule.timeData;
+// const timeDataModule = require('./src/timeData');
+// const timeData = timeDataModule.timeData;
 
 const redisController = {};
 

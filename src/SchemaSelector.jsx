@@ -40,6 +40,19 @@ const schemaDisplay = (props) => {
     //When we click the delete button we want to do the following:
     //remove the button from the schemaList (where the name corresponds to the currentSchema)
     //reset currentSchema to none selected / blank string
+
+    fetch('http://localhost:3333/deleteServer/4000', {
+      method: 'DELETE',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(data => {
+        data.json();
+        console.log(data);
+      })
+
     updateSchemaList(schemaList.filter((el) => {return el !== currentSchema}));
     //you're probably going to want to do the kill port bit before you erase the reference to currentSchema in state
      //kill the node process for the corresponding port specified in the services array where the property 
@@ -60,7 +73,8 @@ const schemaDisplay = (props) => {
   function handleQuery(e) {
       e.preventDefault();
       console.log('here is the handlequery button', e); 
-      console.log(e.target)     
+      console.log(e.target)   
+      console.log(services);  
       changeCurrentSchema(e.target.value);
   }
 

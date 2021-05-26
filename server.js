@@ -11,6 +11,7 @@ const services = servicesModule.services;
 
 // REDIS COMMANDS
 const { redisController, cachePlugin } = require('./redis/redis-commands.js');
+const { readdirSync } = require('fs');
 
 const createNewApolloServer = (service) => {
   const pgPool = new pg.Pool({
@@ -19,7 +20,6 @@ const createNewApolloServer = (service) => {
   });
     
   async function startApolloServer() {
-  
   
     const app = express();
   
@@ -40,7 +40,6 @@ const createNewApolloServer = (service) => {
     );
   
     const options = {};
-  
     const server = new ApolloServer({
       schema,
       plugins: [plugin, cachePlugin, ApolloLogPlugin(options)],
@@ -66,34 +65,66 @@ const createNewApolloServer = (service) => {
       return res.status(500).send('Internal Server Error ' + err);
     });
   
-    //const { url } = await server.listen();
-    // accesing via port 8080
-    await new Promise(resolve => app.listen({ port:service.port }, resolve));
+    const myApp = app.listen({ port:service.port });
+    
     console.log(`🔮 Fortunes being told at http://localhost:${service.port}${server.graphqlPath}✨`);
-    return { server, app };
+  
+    return myApp;
   }
   
-  startApolloServer()
+
+  return startApolloServer()
     .catch(e => {
       console.error(e);
       process.exit(1);
     });
+
   };  
 
+const myServers = [];
 
 services.forEach((service) => {
-  createNewApolloServer(service);
+
+  createNewApolloServer(service)
+    .then(data => myServers.push(data))
+    .catch(err => console.log(err));
+
 })
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(cors());
+
 app.post('/newServer', (req, res) => {
   console.log('inside the /newServer route')
   console.log(req.body);
   createNewApolloServer(req.body);
 })
+
+app.delete('/deleteServer/:port', (req, res) => {
+
+  const myPort = req.params.port;
+
+  const connectionKey = `6::::${myPort}`;
+
+  myServers.forEach(server => {
+    if(server._connectionKey == connectionKey) {
+      // console.log(server.address().port)
+      server.close();
+    }
+  })
+
+  for(let i = 0; i < services.length; i++){
+    console.log(services[i].port)
+    if(services[i].port == myPort) {
+      services.splice(i, 1);
+    }
+  }
+
+})
+
+
 app.listen(3333, ()=> {
   console.log('listening for new APIs to spin up on port 3333')
 });
