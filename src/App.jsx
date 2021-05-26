@@ -25,7 +25,9 @@ const App = () => {
   const [schemaList, updateSchemaList] = useState(['SWAPI','Users']);
   const [fetchURL, setFetchURL] = useState(`http://localhost:${services[0].port}/graphql`);
   const [lastQuerySpeed, setLastQuerySpeed] = useState("");
+  const [lastQuery, setLastQuery] = useState("");
   const [currentPort, setCurrentPort] = useState(services[0].port);
+  const [dataSet, setDataSet] = useState([]);
 
   
   useEffect(() => {
@@ -45,10 +47,11 @@ const App = () => {
       const responseJson = await response.json();
       console.log(responseJson);
       setLastQuerySpeed(Math.round(responseJson.totalDuration / 1000000));
+      setLastQuery(responseJson.clientQuery);
     }
 
     async function clicked() {
-      return setTimeout(fetcher, 1000);
+      return setTimeout(fetcher, 0);
       // responseJson is the metrics object, go ahead and pass it around to the components from here! :)
     }
     execButton[0].addEventListener('click', clicked);
@@ -95,6 +98,18 @@ const App = () => {
     
   }
 
+  const handleSaveClick = () => {
+   //delete if this works
+   setDataSet([...dataSet, 
+    {distance:lastQuerySpeed,
+   colors:[
+      "#fd1d1d",
+      "#833ab4"],
+      query: lastQuery,
+    }
+    ])
+  }
+
   return (
     //this outermost div MUST have the id of 'graphiql' in order for graphiql to render properly
     //the defaultQuery prop currently relates to the default 'Users' DB - not currently working as intended
@@ -114,7 +129,12 @@ const App = () => {
       currentPort={currentPort}
       setCurrentPort={setCurrentPort}
     />
-    <MetricsVisualizer lastQuerySpeed={lastQuerySpeed}/>
+    <MetricsVisualizer 
+    lastQuerySpeed={lastQuerySpeed}
+    dataSet={dataSet}
+    setDataSet={setDataSet}
+    handleSaveClick={handleSaveClick}
+    />
     <SchemaButtonsContainer
       schemaList={schemaList}
       handleQuery={handleQuery}
