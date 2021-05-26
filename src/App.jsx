@@ -57,23 +57,28 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    console.log('inside the gqlApiString useEffect')
     //this conditional is required to make sure we don't overwrite the default state of fetchURL before a schema has been selected
     if (currentSchema !== "") {
-      
+      //this does not work correctly if we delete SWAPI first and then try and click Users
       let gqlApiString;
       let port;
+
         for (let i = 0; i < services.length; i++) {
+          console.log(`LABEL for ${i} iteration: ${services[i].label}`);
           if (services[i].label === currentSchema) {
             port = services[i].port;
             gqlApiString = `http://localhost:${port}/graphql`;
             break;
+          } else {
+            console.log('did not find a matching label');
           }
         }
         //this conditional exists to get round a browser console error, it assumes that we'll have at least 1 object in services.js array
-        if (schemaList.length > 1) {
-          setCurrentPort(port);
+        // if (schemaList.length > 1) {
+        setCurrentPort(port);
         setFetchURL(gqlApiString);
-      }
+      // }
     }
 
   });
@@ -87,6 +92,7 @@ const App = () => {
     console.log(e.target);
     console.log(e.target.innerText);
     changeCurrentSchema(e.target.innerText);
+    
   }
 
   return (
@@ -104,7 +110,10 @@ const App = () => {
     schemaList={schemaList} 
     updateSchemaList={updateSchemaList} 
     fetchURL={fetchURL} 
-    setFetchURL={setFetchURL}/>
+    setFetchURL={setFetchURL}
+      currentPort={currentPort}
+      setCurrentPort={setCurrentPort}
+    />
     <MetricsVisualizer lastQuerySpeed={lastQuerySpeed}/>
     <SchemaButtonsContainer
       schemaList={schemaList}
