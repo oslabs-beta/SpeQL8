@@ -25,23 +25,12 @@ const App = () => {
   const [schemaList, updateSchemaList] = useState(['SWAPI','Users']);
   const [fetchURL, setFetchURL] = useState(`http://localhost:${services[0].port}/graphql`);
   const [lastQuerySpeed, setLastQuerySpeed] = useState("");
+  const [currentPort, setCurrentPort] = useState(services[0].port);
 
   
   useEffect(() => {
     //this conditional is required to make sure we don't overwrite the default state of fetchURL before a schema has been selected
-    if (currentSchema !== "") {
-    let gqlApiString;
-      for (let i = 0; i < services.length; i++) {
-        if (services[i].label === currentSchema) {
-          gqlApiString = `http://localhost:${services[i].port}/graphql`;
-          break;
-        }
-      }
-      //this conditional exists to get round a browser console error, it assumes that we'll have at least 1 object in services.js array
-      if (schemaList.length > 1) {
-      setFetchURL(gqlApiString);
-    }
-  }
+    
   
     const execButton = document.getElementsByClassName('execute-button');
 
@@ -66,6 +55,28 @@ const App = () => {
 
 
   }, []);
+
+  useEffect(() => {
+    //this conditional is required to make sure we don't overwrite the default state of fetchURL before a schema has been selected
+    if (currentSchema !== "") {
+      
+      let gqlApiString;
+      let port;
+        for (let i = 0; i < services.length; i++) {
+          if (services[i].label === currentSchema) {
+            port = services[i].port;
+            gqlApiString = `http://localhost:${port}/graphql`;
+            break;
+          }
+        }
+        //this conditional exists to get round a browser console error, it assumes that we'll have at least 1 object in services.js array
+        if (schemaList.length > 1) {
+          setCurrentPort(port);
+        setFetchURL(gqlApiString);
+      }
+    }
+
+  });
 
   // console.log(`timeData outside of func: ${timeData}`)
   // console.log(Array.isArray(timeData))
