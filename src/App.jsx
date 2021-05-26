@@ -55,6 +55,7 @@ const App = () => {
       )
       const responseJson = await response.json();
       console.log(responseJson);
+      setLastQuerySpeed(Math.round(responseJson.totalDuration / 1000000));
     }
 
     async function clicked() {
