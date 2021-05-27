@@ -1,21 +1,45 @@
 {
-  "name": "SpeQL8",
+  "name": "speql8",
   "version": "1.0.0",
   "description": "Speculative metrics for your GraphQL-powered application.",
-  "main": "babel.config.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+  "main": "index.jsx",
+  "scripts": {       
+    "start": "NODE_ENV=production node ./server.js",
+    "build": "NODE_ENV=production webpack",
+    "dev": "NODE_ENV=development webpack serve --open & NODE_ENV=development nodemon ./server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/russdawg44/SpeQL8.git"
-  },
-  "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/russdawg44/SpeQL8/issues"
+  "dependencies": {
+    "apollo-log": "^1.0.1",
+    "apollo-server-express": "^2.25.0",
+    "file-loader": "^6.2.0",
+    "graphiql": "^1.4.2",
+    "ioredis": "^4.27.3",
+    "pg": "^8.6.0",
+    "postgraphile-apollo-server": "^0.1.1",
+    "react": "^17.0.2",
+    "regenerator-runtime": "^0.13.7",
+    "styled-components": "^5.3.0",
+    "svg-inline-loader": "^0.8.2"
   },
-  "homepage": "https://github.com/russdawg44/SpeQL8#readme"
+  "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-react": "^7.13.13",
+    "@webpack-cli/serve": "^1.4.0",
+    "babel-loader": "^8.2.2",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.2.6",
+    "express": "^4.17.1",
+    "html-webpack-plugin": "^5.3.1",
+    "nodemon": "^2.0.7",
+    "react-dom": "^17.0.2",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.38.0",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2"
+  }
 }

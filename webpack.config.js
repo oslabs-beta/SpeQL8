@@ -25,12 +25,12 @@ module.exports = {
       },
       
       // for graphql module, which uses mjs still
-      {
-        type: 'javascript/auto',
-        test: /\.mjs$/,
-        use: [],
-        include: /node_modules/,
-      },
+      // {
+      //   type: 'javascript/auto',
+      //   test: /\.mjs$/,
+      //   use: [],
+      //   include: /node_modules/,
+      // },
       {
         test: /\.(js|jsx)$/,
         use: [
