@@ -1,21 +1,21 @@
 {
-  "name": "speql8",
+  "name": "SpeQL8",
   "version": "1.0.0",
   "description": "Speculative metrics for your GraphQL-powered application.",
-  "main": "index.js",
+  "main": "babel.config.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node server.js",
-    "build": "cross-env NODE_ENV=development webpack ",
-    "dev": "cross-env NODE_ENV=development webpack serve & NODE_ENV=development nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  }, 
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/russdawg44/SpeQL8.git"
+  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    
+  "bugs": {
+    "url": "https://github.com/russdawg44/SpeQL8/issues"
   },
-
-  "devDependencies": {
-
-  }
-
+  "homepage": "https://github.com/russdawg44/SpeQL8#readme"
+}
