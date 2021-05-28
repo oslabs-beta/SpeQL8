@@ -121,7 +121,7 @@ const schemaDisplay = (props) => {
     const newService = {
       label: input,
       db_uri: uriInput,
-      port: newPort
+      port: newPort,
     };
 
     services.push(newService);

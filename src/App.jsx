@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
 import 'codemirror/theme/material-ocean.css';
+import socketIOClient from 'socket.io-client';
+let ENDPOINT = 'http://localhost:3333'
 const regeneratorRuntime = require("regenerator-runtime");
 
 const servicesModule = require('./services');
@@ -10,6 +12,7 @@ const services = servicesModule.services;
 import SchemaSelector from './SchemaSelector';
 import MetricsVisualizer from './MetricsVisualizer';
 import SchemaButtonsContainer from './SchemaButtonsContainer';
+
 
 /*
 minified CSS is currently being pulled from the graphiql module. If we want to get more
@@ -24,37 +27,77 @@ const App = () => {
   //we probably want to give this the relevant data 'starter' object in services.js as its default state - (services[0].label) rather than hard coding this here
   const [schemaList, updateSchemaList] = useState(['SWAPI','Users']);
   const [fetchURL, setFetchURL] = useState(`http://localhost:${services[0].port}/graphql`);
-  const [lastQuerySpeed, setLastQuerySpeed] = useState("");
+  const [lastQuerySpeed, setLastQuerySpeed] = useState("-");
   const [lastQuery, setLastQuery] = useState("");
   const [currentPort, setCurrentPort] = useState(services[0].port);
   const [dataSet, setDataSet] = useState([]);
+ 
 
   
   useEffect(() => {
+
+    //ALLAN'S SOCKET IO BITS
+    const socket = socketIOClient(ENDPOINT);
+    socket.on("FromAPI", data => {
+      if (typeof data.totalDuration === 'number') {
+        setLastQuerySpeed(Math.round(data.totalDuration / 1000000));
+        setLastQuery(data.clientQuery);
+      }
+    });
+
+
     //this conditional is required to make sure we don't overwrite the default state of fetchURL before a schema has been selected
-    
+    // console.log("inside the userEffect which fires the setTimeout")
   
-    const execButton = document.getElementsByClassName('execute-button');
+    // const execButton = document.getElementsByClassName('execute-button');
 
-    async function fetcher() {
-      const response = await fetch(
-        'http://localhost:4000/redis',
-        {
-          method: 'GET',
-          credentials: 'same-origin',
-        }
-      )
-      const responseJson = await response.json();
-      console.log(responseJson);
-      setLastQuerySpeed(Math.round(responseJson.totalDuration / 1000000));
-      setLastQuery(responseJson.clientQuery);
-    }
+    // async function fetcher() {
+    //   const response = await fetch(
+    //     'http://localhost:4000/redis',
+    //     {
+    //       method: 'GET',
+    //       credentials: 'same-origin',
+    //     }
+    //   )
+    //   const responseJson = await response.json();
+    //   // console.log(responseJson);
+    //   const resolversArr = JSON.parse(responseJson.resolvers);
+    //   console.log(resolversArr);
+    //   setLastQuerySpeed(Math.round(responseJson.totalDuration / 1000000));
 
-    async function clicked() {
-      return setTimeout(fetcher, 0);
-      // responseJson is the metrics object, go ahead and pass it around to the components from here! :)
-    }
-    execButton[0].addEventListener('click', clicked);
+      
+    //         // do not put anything above this line!! setTimeout in clicked will give you an innacurate reading for lastQuerySpeed!
+    //   let queryNumber;
+    //   if (dataSet.length === 0) {
+    //     queryNumber = 1;
+    //   } else {
+    //     queryNumber = dataSet.length + 1;
+    //   }
+    //   setLastQuery(responseJson.clientQuery);
+    //   const dataObj = {
+    //     queryNumber: queryNumber,
+    //     //resolver3: ....
+    //     //...
+    //     //resolver1: ...
+    //     totalReponseTime: Math.round(responseJson.totalDuration / 1000000)
+    //   }
+    //   resolversArr.forEach((obj, index) => {
+    //     console.log(`resolvers array at index ${index}`)
+    //     console.log(obj.duration);
+    //     if (!dataObj[`resolver ${index + 1}`]) {
+    //       //this is going to be a dumb way to present the data because the data for the reamining resolvers is so small... they'll mostly round out to zero...
+    //       dataObj[`resolver${index + 1}`] = Math.round(obj.duration / 1000000);
+    //     }
+    //   });
+    //   setDataSet(prevState => [...prevState, dataObj]);
+    // }
+
+    // async function clicked() {
+    //   console.log('inside clicked!')
+    //   return setTimeout(fetcher, 500);
+    //   // responseJson is the metrics object, go ahead and pass it around to the components from here! :)
+    // }
+    // execButton[0].addEventListener('click', clicked);
 
 
   }, []);
@@ -105,16 +148,52 @@ const App = () => {
     e.target.classList.add('selected-button');
   }
 
+  // xAxis uses the 'weekday' as a key to build itself
+      // you can change it to anything you want
+      const data = [
+        // {
+        //   queryNumber: 1,
+        //   //dogs represe
+        //   'dogs': 1,
+        //   'cats': 2,
+        //   'pets': 3,
+        // },
+        // {
+        //   queryNumber: 2,
+        //   'mice': 4,
+        //   'dogs': 6,
+        //   'cats': 3,
+        //   'pets': 9,
+        // },
+        // {
+        //   queryNumber: 3,
+        //   'dogs': 8,
+        //   'cats': 4,
+        //   'pets': 12,
+        // },      
+      ]
+
+      const [testData, setTestData] = useState(data);
+
   const handleSaveClick = () => {
    //delete if this works
-   setDataSet([...dataSet, 
-    {distance:lastQuerySpeed,
-   colors:[
-      "#fd1d1d",
-      "#833ab4"],
-      query: lastQuery,
-    }
-    ])
+  //  setDataSet([...dataSet, 
+  //   {distance:lastQuerySpeed,
+  //    colors:[
+  //     "#fd1d1d",
+  //     "#833ab4"],
+  //     query: lastQuery,
+  //   }
+  //   ])
+    setTestData([...testData, 
+    {
+      queryNumber: 4,
+          'dogs': 3,
+          'cats': 7,
+          'pets': lastQuerySpeed,
+    }])
+  console.log("testing for handleSaveClick");
+
   }
 
   return (
@@ -141,6 +220,8 @@ const App = () => {
       dataSet={dataSet}
       setDataSet={setDataSet}
       handleSaveClick={handleSaveClick}
+      testData={testData}
+      setTestData={setTestData}
       />
       <GraphiQL clasName="graphiql"
       editorTheme="material-ocean"

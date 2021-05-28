@@ -61,12 +61,17 @@ const cachePlugin = {
                     console.log('operation: ' + requestContext.errors);
                     //Log the tracing extension data of the response
                     const totalDuration = requestContext.response.extensions.tracing.duration;
+                    
+                    const resolvers = JSON.stringify(requestContext.response.extensions.tracing.execution.resolvers);
                     const now = Date.now();
                     const hash = `${now}-${requestContext.queryHash}`
                     const timeStamp = new Date().toString();
                     await redis.hset(`${hash}`, 'totalDuration', `${totalDuration}`);
+                    //....queryBreakdown
                     await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
                     await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
+                    await redis.hset(`${hash}`, `resolvers`, `${resolvers}`);
+                    
                     // console.log(hash);
                     addEntry(hash);
                     // timeData.push(hash);
@@ -76,5 +81,7 @@ const cachePlugin = {
         } else return console.log('Introspection Query Fired');
     }
   }; 
+
+  
 
 module.exports = { redisController, cachePlugin };
