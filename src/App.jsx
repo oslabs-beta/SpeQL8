@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
+import 'codemirror/theme/material-ocean.css';
 const regeneratorRuntime = require("regenerator-runtime");
 
 const servicesModule = require('./services');
 const services = servicesModule.services;
 
-import Heading from './Heading';
 import SchemaSelector from './SchemaSelector';
 import MetricsVisualizer from './MetricsVisualizer';
 import SchemaButtonsContainer from './SchemaButtonsContainer';
@@ -121,51 +121,49 @@ const App = () => {
     //this outermost div MUST have the id of 'graphiql' in order for graphiql to render properly
     //the defaultQuery prop currently relates to the default 'Users' DB - not currently working as intended
     <div id='graphiql' className="main-container">
-    
-
-    <Heading/>
-    
-    <SchemaSelector 
-    currentSchema={currentSchema}
-    changeCurrentSchema={changeCurrentSchema}
-    handleQuery={handleQuery} 
-    schemaList={schemaList} 
-    updateSchemaList={updateSchemaList} 
-    fetchURL={fetchURL} 
-    setFetchURL={setFetchURL}
+      <SchemaSelector
+      currentSchema={currentSchema}
+      changeCurrentSchema={changeCurrentSchema}
+      handleQuery={handleQuery} 
+      schemaList={schemaList} 
+      updateSchemaList={updateSchemaList} 
+      fetchURL={fetchURL} 
+      setFetchURL={setFetchURL}
       currentPort={currentPort}
       setCurrentPort={setCurrentPort}
-    />
-    <MetricsVisualizer 
-    lastQuerySpeed={lastQuerySpeed}
-    dataSet={dataSet}
-    setDataSet={setDataSet}
-    handleSaveClick={handleSaveClick}
-    />
-    <SchemaButtonsContainer
-      schemaList={schemaList}
-      handleQuery={handleQuery}
-    />
-    <GraphiQL
-    // defaultQuery="# Here's a sample query to get you started: \n\n{userById(id:1){\nusername\npassword\n}\n}"
-    //this defaultQuery is not as easy as anticipated... see: https://github.com/graphql/graphiql/blob/fedbc6130939c1e34b29d23257aed7e858bfca0b/src/components/GraphiQL.js#L903-L931
-    fetcher={async graphQLParams => {
-      const data = await fetch(
-        fetchURL,
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+      />
+      <SchemaButtonsContainer
+        schemaList={schemaList}
+        handleQuery={handleQuery}
+      />
+      <MetricsVisualizer 
+      lastQuerySpeed={lastQuerySpeed}
+      dataSet={dataSet}
+      setDataSet={setDataSet}
+      handleSaveClick={handleSaveClick}
+      />
+      <GraphiQL clasName="graphiql"
+      editorTheme="material-ocean"
+      // defaultQuery="# Here's a sample query to get you started: \n\n{userById(id:1){\nusername\npassword\n}\n}"
+      //this defaultQuery is not as easy as anticipated... see: https://github.com/graphql/graphiql/blob/fedbc6130939c1e34b29d23257aed7e858bfca0b/src/components/GraphiQL.js#L903-L931
+      fetcher={async graphQLParams => {
+        const data = await fetch(
+          fetchURL,
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(graphQLParams),
+            credentials: 'same-origin',
           },
-          body: JSON.stringify(graphQLParams),
-          credentials: 'same-origin',
-        },
-      );
-      return data.json().catch(() => data.text());
-    }}
-    />
-  </div>
+        );
+        return data.json().catch(() => data.text());
+      }}
+      
+      />
+    </div>
   );
   };
 

@@ -7,6 +7,8 @@ const services = servicesModule.services;
 // const newServerModule = require('./../newServerInstance');
 // const createNewApolloServer = newServerModule.allanExportTest;
 
+import Heading from './Heading';
+
 const schemaDisplay = (props) => {
   // These are the react hooks
   // const [currentSchema, changeCurrentSchema] = useState(""); 
@@ -167,14 +169,15 @@ const schemaDisplay = (props) => {
   // Html and form below
 
   return (
-    <div>
+    <div className='selector'>
+        <Heading/>
         <div className="inputDiv">       
           <span type="text" className="schemaInput">                
           Current Schema:  {currentSchema}  
           </span>        
           <button onClick={handleDelete}>Delete</button>
         </div>
-      <div>       
+      <div className="mainForm">       
         <form id="mainForm">
             <label className="label-text">
               Schema Name:

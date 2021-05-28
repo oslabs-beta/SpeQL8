@@ -2,20 +2,64 @@ body {
   padding: 0;
   margin: 0;
   min-height: 100vh;
-  background-color: #09141c;
+  font-family: 'Lato', sans-serif;
+  background-color: #001a17;
+  background-image: url("https://cdn.discordapp.com/attachments/825520363151556638/847539075778478120/mirrored-squares.png");
+  /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
 }
+
+.selector {
+  display: grid;
+  color: rgb(41, 185, 115);
+  grid-column: 1 / 2;
+  grid-row: 1 / 5;
+  align-items: start;
+  align-content: start;
+  background-color: rgba(4, 0, 53, 0.548);
+  border-right: 4px solid rgb(169, 152, 247);
+  background-image: url('https://cdn.discordapp.com/attachments/825520363151556638/847147619544989706/SpeQL82.png');
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: contain;
+}
+
 #root {
   height: 100vh;
 }
-h1,
+
+h1
 h3,
 h4,
 p {
   color: rgb(41, 185, 115);
 }
 
+#catchPhrase {
+  font-size: small;
+  margin-top: -10px;
+  font-family: 'Lato', sans-serif;
+}
+
+#goldThing {
+  height: 80px;
+  width: 120px;
+  margin-left: 25px;
+}
+
+.mainForm {
+  display: grid;
+}
+
+.inputDiv {
+  align-self: center;
+}
+
 .main-container {
-  height: 100vh;
+  display: grid;
+  grid-template-columns: [first] 250px [line2] 40px [line3] auto [end];
+  grid-template-rows: [top] 40px [row1-end] auto [row2-end] 30px [graphiql-top] 300px [bottom];
+  height: 100%;
+  overflow-y: scroll;
 }
 
 .query-speed-box {
@@ -23,6 +67,12 @@ p {
   height: 150px;
   width: 150px;
   text-align: center;
+}
+
+.heading {
+  font-family: 'Poiret One';
+  text-align: center;
+  align-content: center;
 }
 
 p {
@@ -35,6 +85,7 @@ p {
 
 .column-chart {
   display: inline-block;
+  width: 100%;
 }
 
 .label-text {
@@ -76,29 +127,46 @@ li {
 }
 
 .schema-button-list {
-  margin: 0;
-  padding: 0;
-  margin-top: 1rem;
+  display: grid;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  justify-content: end;
 }
 
 /* naming is confusing here - suggest changing schemaButton to 'schema-list-element' */
 
 .schemaButton {
-  margin: 0;
-  padding: 0;
+  display: grid;
+  transform: rotate(90deg);
+  height:auto;
+  width: auto;
+  padding-bottom: 20px;
 }
 
 .schema-button {
-  border: 1px solid #09141c;
-  padding: 10px;
-  border-top-left-radius: 25px;
+  border: 2px solid rgb(169, 152, 247);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  color:rgb(41, 185, 115);
+  background-color: rgba(4, 0, 53, 0.548);
+  font-size: medium;
+  padding-top: 10px;
+  padding-bottom: 5px;
 }
 
-/* .schema-button:focus {
-  border: 2px solid rgb(41, 185, 115);
-} */
 
-.selected-button {
-  border: 2px solid rgb(41, 185, 115);
-  box-shadow: 0px 3px 15px rgba(177, 230, 206, 0.845);
+.schema-button:focus {
+  background-color: rgb(169, 152, 247);
+  color: rgba(4, 0, 53, 0.548);
+
+}
+
+.graphiql-container {
+  display: grid;
+  grid-column: 2 / 4;
+  grid-row: 4 / 5;
+}
+
+.topBar {
+  background: linear-gradient(#00273d, #000000)
 }
