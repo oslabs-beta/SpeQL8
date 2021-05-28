@@ -10,7 +10,7 @@ import {
   MakeBar
 } from "./styles";
 
-
+import Tooltip from './Tooltip';
 //Use hooks here instead of the imported dataset
 
 
@@ -44,7 +44,9 @@ const ColumnChart = (props) => {
           return (
             <BarChartContainer key={i}>
               <Number color={colors[1]}>{distance} ms</Number>
-              <MakeBar height={distance * 2} colors={colors} />
+              <Tooltip content='TESTING!' direction='right'>
+                <MakeBar height={distance * 2} colors={colors} />
+              </Tooltip>
             </BarChartContainer>
           );
         })}
