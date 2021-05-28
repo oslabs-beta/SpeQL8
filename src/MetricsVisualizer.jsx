@@ -10,12 +10,13 @@ const MetricsVisualizer = (props) => {
   //within state, ignore the first element within TimeData (although this will have to live up a level if it's being set by the graphiQL play button)
     return (
       <div>
-      <div className='query-speed-box'>
-          <button onClick={handleSaveClick}>Save As Comparison</button>
-          <h4>Query Response Time</h4>
-          <p>{lastQuerySpeed}<span className='milliseconds-display'>ms</span></p>
-      </div>
-      <ColumnChart dataSet={dataSet} />
+        <div className='query-speed-box'>
+
+            <h4>Query Response Time</h4>
+            <p>{lastQuerySpeed}<span className='milliseconds-display'>ms</span></p>
+            <button onClick={handleSaveClick}>Save As Comparison</button>
+        </div>
+        <ColumnChart dataSet={dataSet} />
       </div>
     )
 }
