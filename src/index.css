@@ -154,9 +154,11 @@ li {
   padding-bottom: 5px;
 }
 
+
 .schema-button:focus {
   background-color: rgb(169, 152, 247);
   color: rgba(4, 0, 53, 0.548);
+
 }
 
 .graphiql-container {

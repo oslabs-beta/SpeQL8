@@ -95,7 +95,14 @@ const App = () => {
     console.log(e.target);
     console.log(e.target.innerText);
     changeCurrentSchema(e.target.innerText);
-    
+    console.log(e.target.id);
+    const allSchemaButtons = document.getElementsByClassName('schema-button');
+    console.log(allSchemaButtons.length);
+    for (let i = 0; i < allSchemaButtons.length; i++) {
+      allSchemaButtons[i].classList.remove('selected-button');
+    }
+    // allSchemaButtons.forEach((button) => button.classList.remove('selected-button'));
+    e.target.classList.add('selected-button');
   }
 
   const handleSaveClick = () => {

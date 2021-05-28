@@ -35,7 +35,7 @@ const createNewApolloServer = (service) => {
               //These are not the same!
               //not using the graphiql route below
               graphiqlRoute: '/test',
-              enhanceGraphiql: true
+              enhanceGraphiql: true,
       }
     );
   
