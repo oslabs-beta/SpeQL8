@@ -6,12 +6,12 @@ import socketIOClient from 'socket.io-client';
 let ENDPOINT = 'http://localhost:3333'
 const regeneratorRuntime = require("regenerator-runtime");
 
-const servicesModule = require('./services');
+const servicesModule = require('./modules/services');
 const services = servicesModule.services;
 
-import SchemaSelector from './SchemaSelector';
-import MetricsVisualizer from './MetricsVisualizer';
-import SchemaButtonsContainer from './SchemaButtonsContainer';
+import SchemaSelector from './components/SchemaSelector';
+import MetricsVisualizer from './components/MetricsVisualizer';
+import SchemaButtonsContainer from './components/SchemaButtonsContainer';
 
 
 /*
