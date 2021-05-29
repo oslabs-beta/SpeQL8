@@ -14,6 +14,12 @@ const app = express();
 // app.use(express.urlencoded({ extended: true }));
 // app.use(cors());
 
+// REDIS
+const { redisController, cachePlugin, updater } = require('./redis/redis-commands.js');
+// const Redis = require('ioredis');
+// const redis = new Redis();
+
+
 //ALLAN'S SOCKET IO STUFF//
 const server = http.createServer(app);
 
@@ -23,8 +29,9 @@ const socketIo = require('socket.io')(server, {
     methods: ["GET", "POST", "DELETE"]
   }
 });
-let updater = '-'
+
 const getApiAndEmit = socket => {
+  console.log(updater);
   const response = updater;
   socket.emit("FromAPI", response);
 }
@@ -168,49 +175,6 @@ const createNewApolloServer = (service) => {
     .then(data => myServers.push(data))
     .catch(err => console.log(err))
   })
-
-  const cachePlugin = {
-    requestDidStart(context) {
-      console.log('cache plugin fired');
-      const clientQuery = context.request.query;
-    //   console.log(`Client Query ${clientQuery}`)
-      const cq = Object.values(clientQuery);
-    //   console.log(cq.slice(0,24));
-      
-        if (cq[11]!=='I'&&cq[12]!=='n'&&cq[13]!=='t'&&cq[14]!=='r'&&cq[15]!=='o'&&cq[16]!=='s'&&cq[17]!=='p'&&cq[18]!=='e') {
-            return {
-                //does this need to be async? I deleted the async and it seems to be chill
-                willSendResponse(requestContext) {
-                    // console.log('schemaHash: ' + requestContext.schemaHash);
-                    // console.log('queryHash: ' + requestContext.queryHash);
-                    // console.log('operation: ' + requestContext.errors);
-                    //Log the tracing extension data of the response
-                    const totalDuration = requestContext.response.extensions.tracing.duration;
-                    // console.log(`totalDuration is: ${totalDuration}`)
-                    updater = {
-                        totalDuration: totalDuration,
-                        clientQuery: clientQuery,
-                    }
-                    // const resolvers = JSON.stringify(requestContext.response.extensions.tracing.execution.resolvers);
-                    // const now = Date.now();
-                    // const hash = `${now}-${requestContext.queryHash}`
-                    // const timeStamp = new Date().toString();
-                    // await redis.hset(`${hash}`, 'totalDuration', `${totalDuration}`);
-                    // //....queryBreakdown
-                    // await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
-                    // await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
-                    // await redis.hset(`${hash}`, `resolvers`, `${resolvers}`);
-                    
-                    // // console.log(hash);
-                    // addEntry(hash);
-                    // timeData.push(hash);
-                    // console.log(`timeData = ${timeData}`)
-                },
-            };
-        } else return console.log('Introspection Query Fired');
-    }
-  }; 
-
 
 
 
