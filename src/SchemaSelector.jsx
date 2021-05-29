@@ -75,6 +75,9 @@ const schemaDisplay = (props) => {
     console.log('this is the event for the add schema buttton', e);
     e.preventDefault();
 
+
+    if (input !== '' || uriInput !== '') {   
+
     // console.log(timeData);
     // let lastTimeData = timeData[timeData.length - 1].hash;
     // console.log(`last time data is ${lastTimeData}`);
@@ -102,11 +105,33 @@ const schemaDisplay = (props) => {
     .then((data => data.json()))
     .then(results => {
       console.log('these are the results from the fetch request in the handle add', results)
-    })  
+    }) 
+
+  // if (input === '' && uriInput === '') {
+  //   setClickable(false);
+  //  } else {
+  //   setClickable(true);
+  //  }
+  // if (input === '' && uriInput === '') {
+  //   document.getElementById("Button").disabled = true;
+  // }
+   //else {
+    //disabled = false;
+  // }
+  // if (uriInput === '') {
+  //   document. getElementById("Button"). disabled = true;
+  // } else {
+  //   disabled = false;
+  // }
+
+  
     
     updateSchemaList((prevState) => [...prevState, input]);    
     inputChange("");
     changeUri("");
+  } else {
+    alert('enter info');
+  }
   }
 
   function handleSchemaNameChange(e) {
@@ -158,7 +183,7 @@ const schemaDisplay = (props) => {
             </label>
             <input value={uriInput} type="text" onChange={handleDbUri} name="db-uri"></input>
             <br></br>
-            <button type="submit" onClick={handleAdd}>
+            <button id="addschema" type="submit" onClick={handleAdd}>
               Add Schema
             </button>
         </form>

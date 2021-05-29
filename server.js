@@ -44,7 +44,9 @@ const createNewApolloServer = (service) => {
     const server = new ApolloServer({
       schema,
       plugins: [plugin, cachePlugin, ApolloLogPlugin(options)],
-      tracing: true
+      tracing: true,
+      introspection: true
+
     });
   
     await server.start();
@@ -104,9 +106,12 @@ app.post('/newServer', (req, res) => {
   console.log(req.body);
   createNewApolloServer(req.body);
 })
+
+app.use(express.static('dist'));
 app.listen(3333, ()=> {
   console.log('listening for new APIs to spin up on port 3333')
 });
+
 
 
 
