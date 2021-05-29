@@ -10,6 +10,7 @@ const cors = require('cors');
 
 //MOVING THIS UP TOP
 const app = express();
+app.use(express.static('dist'));
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 // app.use(cors());
@@ -115,7 +116,8 @@ const createNewApolloServer = (service) => {
     const server = new ApolloServer({
       schema,
       plugins: [plugin, cachePlugin, ApolloLogPlugin(options)],
-      tracing: true
+      tracing: true,
+      introspection: true
     });
   
     await server.start();

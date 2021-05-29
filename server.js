@@ -121,7 +121,9 @@ const createNewApolloServer = (service) => {
     const server = new ApolloServer({
       schema,
       plugins: [plugin, cachePlugin, ApolloLogPlugin(options)],
-      tracing: true
+      tracing: true,
+      introspection: true
+
     });
   
     await server.start();
@@ -175,6 +177,21 @@ const createNewApolloServer = (service) => {
     .catch(err => console.log(err))
   })
 
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.post('/newServer', (req, res) => {
+  console.log('inside the /newServer route')
+  console.log(req.body);
+  createNewApolloServer(req.body);
+})
+
+app.use(express.static('dist'));
+app.listen(3333, ()=> {
+  console.log('listening for new APIs to spin up on port 3333')
+});
 
 
 
