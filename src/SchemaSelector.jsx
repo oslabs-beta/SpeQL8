@@ -7,6 +7,8 @@ const services = servicesModule.services;
 // const newServerModule = require('./../newServerInstance');
 // const createNewApolloServer = newServerModule.allanExportTest;
 
+import Heading from './Heading';
+
 const schemaDisplay = (props) => {
   // These are the react hooks
   // const [currentSchema, changeCurrentSchema] = useState(""); 
@@ -20,6 +22,8 @@ const schemaDisplay = (props) => {
   //not getting used - delete?
   const { fetchURL } = props;
   const { setFetchURL } = props;
+  const { currentPort } = props;
+  const { setCurrentPort } = props;
 
   useEffect(() => {
     //this functionality is in useEffect rather than handleQuery due to the async nature of updating state.
@@ -38,19 +42,50 @@ const schemaDisplay = (props) => {
 
   // These are all the button methods:
   //TO DO: COME BACK AND REFACTOR
+  // function handleDelete(e) {
+  //   //When we click the delete button we want to do the following:
+  //   //remove the button from the schemaList (where the name corresponds to the currentSchema)
+  //   //reset currentSchema to none selected / blank string
+  //   updateSchemaList(schemaList.filter((el) => {return el !== currentSchema}));
+  //   //you're probably going to want to do the kill port bit before you erase the reference to currentSchema in state
+  //    //kill the node process for the corresponding port specified in the services array where the property 
+  //    //'label' matches the schema name - see this article: https://melvingeorge.me/blog/kill-nodejs-process-at-specific-port-linux
+  //   changeCurrentSchema("");
+      
+  //    //TBD on this fetch method...was just an idea, not sure if could work.
+  //   // fetch("", {
+  //   //   method: "DELETE",
+  //   // })
+  //   //   .then((res) => res.json())
+  //   //   .then((data) => {})
+  //   //   .catch((err) => console.log(err));
+  // }
+
   function handleDelete(e) {
+    setFetchURL(`http://localhost:${services[0].port}/graphql`)
     //When we click the delete button we want to do the following:
     //remove the button from the schemaList (where the name corresponds to the currentSchema)
     //reset currentSchema to none selected / blank string
+    fetch(`http://localhost:3333/deleteServer/${currentPort}`, {
+      method: 'DELETE',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(data => {
+        data.json();
+        console.log(data);
+      })
     updateSchemaList(schemaList.filter((el) => {return el !== currentSchema}));
-    //you're probably going to want to do the kill port bit before you erase the reference to currentSchema in state
-     //kill the node process for the corresponding port specified in the services array where the property 
-     //'label' matches the schema name - see this article: https://melvingeorge.me/blog/kill-nodejs-process-at-specific-port-linux
-    changeCurrentSchema("");
-      
+    //you’re probably going to want to do the kill port bit before you erase the reference to currentSchema in state
+     //kill the node process for the corresponding port specified in the services array where the property
+     //‘label’ matches the schema name - see this article: https://melvingeorge.me/blog/kill-nodejs-process-at-specific-port-linux
+    changeCurrentSchema('');
+    setCurrentPort(4000);
      //TBD on this fetch method...was just an idea, not sure if could work.
-    // fetch("", {
-    //   method: "DELETE",
+    // fetch(“”, {
+    //   method: “DELETE”,
     // })
     //   .then((res) => res.json())
     //   .then((data) => {})
@@ -76,7 +111,7 @@ const schemaDisplay = (props) => {
     e.preventDefault();
 
 
-    if (input !== '' || uriInput !== '') {   
+    if (input !== '' && uriInput !== '') {   
 
     // console.log(timeData);
     // let lastTimeData = timeData[timeData.length - 1].hash;
@@ -89,7 +124,7 @@ const schemaDisplay = (props) => {
     const newService = {
       label: input,
       db_uri: uriInput,
-      port: newPort
+      port: newPort,
     };
 
     services.push(newService);
@@ -159,14 +194,15 @@ const schemaDisplay = (props) => {
   // Html and form below
 
   return (
-    <div>
+    <div className='selector'>
+        <Heading/>
         <div className="inputDiv">       
           <span type="text" className="schemaInput">                
           Current Schema:  {currentSchema}  
           </span>        
           <button onClick={handleDelete}>Delete</button>
         </div>
-      <div>       
+      <div className="mainForm">       
         <form id="mainForm">
             <label className="label-text">
               Schema Name:

@@ -2,27 +2,93 @@ body {
   padding: 0;
   margin: 0;
   min-height: 100vh;
-  background-color: #09141c;
+  font-family: 'Lato', sans-serif;
+  background-color: #001a17;
+  background-image: url("https://cdn.discordapp.com/attachments/825520363151556638/847539075778478120/mirrored-squares.png");
+  /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
 }
+
+.selector {
+  display: grid;
+  color: #C3E88D;
+  grid-column: 1 / 2;
+  grid-row: 1 / 5;
+  align-items: start;
+  align-content: start;
+  background-color: rgba(4, 0, 53, 0.548);
+  border-right: 4px solid #C792EA;
+  background-image: url('https://cdn.discordapp.com/attachments/825520363151556638/847147619544989706/SpeQL82.png');
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: contain;
+}
+
+.selector button {
+  background: linear-gradient(#657099, #0F111A);
+  color: #EEFFFF;
+  border: none;
+  border-radius: 3px;
+  padding: 5px, 10px, 5px, 10px;
+}
+
+.query-speed-box button {
+  background: linear-gradient(#657099, #0F111A);
+  color: #EEFFFF;
+  border: none;
+  border-radius: 3px;
+  padding: 5px, 10px, 5px, 10px;
+}
+
 #root {
   height: 100vh;
 }
-h1,
+
+h1
 h3,
 h4,
 p {
-  color: rgb(41, 185, 115);
+  color: #C3E88D;
+}
+
+#catchPhrase {
+  font-size: small;
+  margin-top: -10px;
+  font-family: 'Lato', sans-serif;
+}
+
+#goldThing {
+  height: 80px;
+  width: 120px;
+  margin-left: 25px;
+}
+
+.mainForm {
+  display: grid;
+}
+
+.inputDiv {
+  align-self: center;
 }
 
 .main-container {
-  height: 100vh;
+  display: grid;
+  grid-template-columns: [first] 250px [line2] 40px [line3] auto [end];
+  grid-template-rows: [top] 40px [row1-end] auto [row2-end] 30px [graphiql-top] 300px [bottom];
+  height: 100%;
+  overflow-y: scroll;
 }
 
 .query-speed-box {
-  border: 2px solid red;
+  border: 2px solid #89DDFF;
   height: 150px;
   width: 150px;
   text-align: center;
+}
+
+.heading {
+  font-family: 'Poiret One';
+  text-align: center;
+  align-content: center;
 }
 
 p {
@@ -35,14 +101,15 @@ p {
 
 .column-chart {
   display: inline-block;
+  width: 100%;
 }
 
 .label-text {
-  color: rgb(41, 185, 115);
+  color: #89DDFF;
 }
 
 .input-div {
-  color: rgb(41, 185, 115);
+  color: #89DDFF;
 }
 
 /* .header {
@@ -72,28 +139,140 @@ li {
 }
 
 .schemaInput {
-  color: rgb(41, 185, 115);
+  color: #89DDFF;
 }
 
 .schema-button-list {
-  margin: 0;
-  padding: 0;
-  margin-top: 1rem;
+  display: grid;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  justify-content: end;
 }
 
 /* naming is confusing here - suggest changing schemaButton to 'schema-list-element' */
 
 .schemaButton {
-  margin: 0;
-  padding: 0;
+  display: grid;
+  transform: rotate(90deg);
+  height:auto;
+  width: auto;
+  padding-bottom: 20px;
 }
 
 .schema-button {
-  border: 1px solid #09141c;
-  padding: 10px;
-  border-top-left-radius: 25px;
+  border: 2px solid #C792EA;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  color:#C3E88D;
+  background-color: rgba(4, 0, 53, 0.548);
+  font-size: medium;
+  padding-top: 10px;
+  padding-bottom: 5px;
 }
 
+
 .schema-button:focus {
-  border: 2px solid rgb(41, 185, 115);
+  background-color: #C792EA;
+  color: #FF5370;
+
+}
+
+.graphiql-container {
+  display: grid;
+  grid-column: 2 / 4;
+  grid-row: 4 / 5;
+}
+
+.graphiql-container {
+  color:#C3E88D;
+  font-family: 'Lato', sans-serif;
+}
+
+div.editorWrap {
+  overflow-x:scroll;
+
+}
+
+div.graphiql-container div.topBar {
+  background: linear-gradient(#1a0053,#000);
+  border-bottom: 1px solid goldenrod;
+}
+
+div.topBar div.title {
+  font-size: 28px;
+  font-family: 'Poiret One';
+}
+
+div.execute-button-wrap button.execute-button {
+  background: linear-gradient(#657099, #0F111A);
+  box-shadow: none;
+  border: 1px solid #0F111A;
+  fill: #EEFFFF;
+}
+
+div.toolbar button.toolbar-button {
+
+  background: linear-gradient(#657099, #0F111A);
+  color: #EEFFFF;
+  box-shadow: none;
+}
+
+.graphiql-container .docExplorerShow {
+  background: linear-gradient(#1a0053,#000);
+  border-bottom: 1px solid goldenrod;
+  color: #C3E88D;
+}
+
+.graphiql-container .resultWrap {
+  border-left: 1px solid goldenrod;
+}
+
+.graphiql-container .result-window .CodeMirror-gutters {
+  background: linear-gradient(#1a0053,#000);
+  color: #EEFFFF;
+  border-color: goldenrod;
+}
+
+.graphiql-container .secondary-editor-title {
+  background: linear-gradient(#1a0053,#000);
+  border-bottom: 1px solid goldenrod;
+  border-top: none;
+  font-variant: small-caps;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.graphiql-container .secondary-editor-title div {
+  color: #89DDFF !important;
+}
+
+.graphiql-container .docExplorerWrap, .graphiql-container .historyPaneWrap {
+  background: #0F111A;
+  box-shadow: 0 0 8px rgba(0,0,0,.15);
+  border-right: 1px solid goldenrod;
+}
+
+.graphiql-container .doc-explorer {
+  background: linear-gradient(#1a0053,#000);
+  font-family: 'Poiret One';
+  /* font-variant: small-caps; */
+  letter-spacing: 1px;
+  font-size: 20px;
+}
+
+.graphiql-container button, .graphiql-container input {
+  color: #FF5370;
+}
+
+.graphiql-container .doc-explorer-contents, .graphiql-container .history-contents {
+  background-color: #0F111A;
+  border-top: 1px solid goldenrod;
+}
+
+.graphiql-container .search-box {
+  border-bottom: 1px solid #C3E88D;
+}
+
+.graphiql-container .search-box > input {
+  background-color: #0F111A;
 }
