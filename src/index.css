@@ -32,11 +32,17 @@ body {
 }
 
 .query-speed-box button {
-  background: linear-gradient(#657099, #0F111A);
+  background: rgba(4, 0, 53, 0.548);
   color: #EEFFFF;
   border: none;
-  border-radius: 3px;
-  padding: 5px, 10px, 5px, 10px;
+  border-bottom: 1px solid #C792EA;
+  padding: 10px;
+  width: 100%;
+}
+
+.query-speed-box button:hover {
+  cursor: pointer;
+  color: #FF5370;
 }
 
 #root {
@@ -79,10 +85,21 @@ p {
 }
 
 .query-speed-box {
-  border: 2px solid #89DDFF;
-  height: 150px;
+  border: 1px solid #C792EA;
+  height: auto;
   width: 150px;
   text-align: center;
+}
+
+h4 {
+  margin: 0;
+  background-color: #0F111A;
+}
+
+.query-speed-box p {
+  background-color: #0F111A;
+  height: auto;
+  margin: 0;
 }
 
 .heading {
@@ -194,7 +211,7 @@ div.editorWrap {
 }
 
 div.graphiql-container div.topBar {
-  background: linear-gradient(#1a0053,#000);
+  background: linear-gradient(#090d33,#000);
   border-bottom: 1px solid goldenrod;
 }
 
@@ -218,7 +235,7 @@ div.toolbar button.toolbar-button {
 }
 
 .graphiql-container .docExplorerShow {
-  background: linear-gradient(#1a0053,#000);
+  background: linear-gradient(#090d33,#000);
   border-bottom: 1px solid goldenrod;
   color: #C3E88D;
 }
@@ -228,13 +245,13 @@ div.toolbar button.toolbar-button {
 }
 
 .graphiql-container .result-window .CodeMirror-gutters {
-  background: linear-gradient(#1a0053,#000);
+  background: linear-gradient(#090d33,#000);
   color: #EEFFFF;
   border-color: goldenrod;
 }
 
 .graphiql-container .secondary-editor-title {
-  background: linear-gradient(#1a0053,#000);
+  background: linear-gradient(#090d33,#000);
   border-bottom: 1px solid goldenrod;
   border-top: none;
   font-variant: small-caps;
@@ -253,7 +270,7 @@ div.toolbar button.toolbar-button {
 }
 
 .graphiql-container .doc-explorer {
-  background: linear-gradient(#1a0053,#000);
+  background: linear-gradient(#090d33,#000);
   font-family: 'Poiret One';
   /* font-variant: small-caps; */
   letter-spacing: 1px;
@@ -276,3 +293,4 @@ div.toolbar button.toolbar-button {
 .graphiql-container .search-box > input {
   background-color: #0F111A;
 }
+
