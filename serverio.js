@@ -1,6 +1,6 @@
 const express = require('express');
 const http = require('http');
-const servicesModule = require('./src/services');
+const servicesModule = require('./src/modules/services');
 const services = servicesModule.services;
 const pg = require('pg');
 const { ApolloServer } = require("apollo-server-express");
@@ -15,39 +15,7 @@ app.use(express.static('dist'));
 // app.use(express.urlencoded({ extended: true }));
 // app.use(cors());
 
-// REDIS
-const { redisController, cachePlugin, updater } = require('./redis/redis-commands.js');
-// const Redis = require('ioredis');
-// const redis = new Redis();
-
-
-//ALLAN'S SOCKET IO STUFF//
-const server = http.createServer(app);
-
-const socketIo = require('socket.io')(server, {
-  cors: {
-    origin: '*',
-    methods: ["GET", "POST", "DELETE"]
-  }
-});
-
-const getApiAndEmit = socket => {
-  const response = updater;
-  socket.emit("FromAPI", response);
-}
-
-let interval;
-socketIo.on("connection", (socket) => {
-  console.log("New client connected");
-  if (interval) {
-    clearInterval(interval);
-  }
-  interval = setInterval(() => getApiAndEmit(socket), 1000);
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-    clearInterval(interval);
-  });
-});
+//THIS CAN'T CONNECT - why?
 
 // app.post('/newServer', (req, res) => {
 //   console.log('inside the /newServer route')
@@ -79,6 +47,43 @@ socketIo.on("connection", (socket) => {
 //   // }
 //   // console.log(services);
 // });
+
+// REDIS
+const { redisController, cachePlugin, updater } = require('./redis/redis-commands.js');
+// const Redis = require('ioredis');
+// const redis = new Redis();
+
+
+//ALLAN'S SOCKET IO STUFF//
+const server = http.createServer(app);
+
+const socketIo = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+    methods: ["GET", "POST", "DELETE"]
+  }
+});
+
+const getApiAndEmit = socket => {
+  // console.log(updater);
+  const response = updater;
+  socket.emit("FromAPI", response);
+}
+
+let interval;
+socketIo.on("connection", (socket) => {
+  console.log("New client connected");
+  if (interval) {
+    clearInterval(interval);
+  }
+  interval = setInterval(() => getApiAndEmit(socket), 1000);
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+    clearInterval(interval);
+  });
+});
+
+
 
 server.listen(3333, ()=> {
   console.log('listening for new APIs to spin up on port 3333')

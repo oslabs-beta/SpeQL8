@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-const servicesModule = require('./services');
+const servicesModule = require('../modules/services');
 const services = servicesModule.services;
 //these don't work - will need another solution...
 // const timeDataModule = require('./timeData');
