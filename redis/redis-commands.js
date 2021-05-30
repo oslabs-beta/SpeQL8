@@ -16,32 +16,43 @@ const addEntry = async (hashCode) => {
     return key;
 }
 
+const timer = (t0, t1) => {
+    const start = parseInt(t0[0])*1000000 + parseInt(t0[1]);
+    const stop = parseInt(t1[0])*1000000 + parseInt(t1[1]);
+    return stop - start;
+}
+
 // EXPRESS MIDDLEWARE
 const redisController = {};
 
 redisController.serveMetrics = async (req, res, next) => {
-    const key = await redis.get('totalEntries', (err, result) => {
+    // const key = await redis.get('totalEntries', (err, result) => {
+    //     if (err) {
+    //         console.log(err);
+    //         return next(err);
+    //     } else {
+    //         return result;
+    //     }
+    // });
+    // const hashCode = await redis.get(key, (err, result) => {
+    //     if (err) {
+    //         console.log(err);
+    //         return next(err);
+    //     } else {
+    //         return result;
+    //     }
+    // })
+    const start = await redis.time();
+    
+    redis.hgetall(req.params['hash'], async (err, result) => {
         if (err) {
             console.log(err);
             return next(err);
         } else {
-            return result;
-        }
-    });
-    const hashCode = await redis.get(key, (err, result) => {
-        if (err) {
-            console.log(err);
-            return next(err);
-        } else {
-            return result;
-        }
-    })
-    redis.hgetall(hashCode, (err, result) => {
-        if (err) {
-            console.log(err);
-            return next(err);
-        } else {
+            const stop = await redis.time();
+            result.cacheTime = await timer(start, stop);
             res.locals.metrics = result;
+
             return next();
         }
     });

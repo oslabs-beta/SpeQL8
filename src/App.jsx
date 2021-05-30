@@ -31,6 +31,7 @@ const App = () => {
   const [lastQuery, setLastQuery] = useState("");
   const [currentPort, setCurrentPort] = useState(services[0].port);
   const [dataSet, setDataSet] = useState([]);
+  const [lastHash, setLastHash] = useState("");
  
 
   
@@ -42,6 +43,7 @@ const App = () => {
       if (typeof data.totalDuration === 'number') {
         setLastQuerySpeed(Math.round(data.totalDuration / 1000000));
         setLastQuery(data.clientQuery);
+        setLastHash(data.hash);
       }
     });
 
@@ -196,6 +198,19 @@ const App = () => {
 
   }
 
+  const handleCacheClick = async () => {
+    console.log('fetching from redis');
+    const response = await fetch(
+      `http://localhost:4000/redis/${lastHash}`,
+      {
+        method: 'GET',
+        credentials: 'same-origin',
+      }
+    )
+    const responseJson = await response.json();
+    console.log(responseJson);
+  }
+
   return (
     //this outermost div MUST have the id of 'graphiql' in order for graphiql to render properly
     //the defaultQuery prop currently relates to the default 'Users' DB - not currently working as intended
@@ -220,6 +235,7 @@ const App = () => {
       dataSet={dataSet}
       setDataSet={setDataSet}
       handleSaveClick={handleSaveClick}
+      handleCacheClick={handleCacheClick}
       testData={testData}
       setTestData={setTestData}
       />

@@ -32,7 +32,6 @@ const socketIo = require('socket.io')(server, {
 });
 
 const getApiAndEmit = socket => {
-  console.log(updater);
   const response = updater;
   socket.emit("FromAPI", response);
 }
@@ -86,12 +85,6 @@ server.listen(3333, ()=> {
 });
 
 
-
-
-// // REDIS COMMANDS
-// const { redisController, cachePlugin } = require('./redis/redis-commands.js');
-// const { cachePlugin } = require('./redis/redis-commands.js');
-
 const createNewApolloServer = (service) => {
   const pgPool = new pg.Pool({
     //do this via an environment variable
@@ -141,11 +134,11 @@ const createNewApolloServer = (service) => {
     }
     app.use(cors(corsOptions));
   
-    // app.get('/redis', redisController.serveMetrics, (req, res) => {
-    //   console.log('Result from Redis cache: ');
-    //   console.log(res.locals.metrics);
-    //   return res.status(200).send(res.locals.metrics);
-    // })
+    app.get('/redis/:hash', redisController.serveMetrics, (req, res) => {
+      console.log('Result from Redis cache: ');
+      console.log(res.locals.metrics);
+      return res.status(200).send(res.locals.metrics);
+    })
   
     app.use('*', (req, res) => {
       return res.status(404).send('404 Not Found');
