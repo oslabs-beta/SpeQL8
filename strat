@@ -1,0 +1,28 @@
+user can upload .sql or .tar file from their machine
+create new database from input name
+create a new instance of postgres db on local machine from script file uploaded
+run postgraphile instance from postgres db
+
+1) run terminal command on button click ('ls') V
+    child process ? V
+    -create a button, set up getch request on click V
+
+2) databse actions
+    - create db from name
+    - drop existing db
+    - run sql file psql -U postgres -d {dbName} -f {file}
+    - run tar file pg_restore -U postgres -d {dbName} "{file}"
+    - promisified execute to execute commands ???
+
+strategy: connect psql -d <url> -f db.sql on click  V
+          connect to db from file V
+          show postgres db contents V
+
+? : pg_dump, < windows comp-ty, promisify/async
+
+3) postgres -> postgraphile -> apollo server -> graphql ???
+   postgres schema -> apollo server -> graphql ???
+   ----> pgPool from postgres:///sample........ omg WOW it works!!!
+
+4) upload file from local machine + get file path
+   chain together child processes

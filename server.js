@@ -9,6 +9,8 @@ const cors = require('cors');
 const servicesModule = require('./src/services');
 const services = servicesModule.services;
 
+const { exec } = require("child_process");
+
 // REDIS COMMANDS
 const { redisController, cachePlugin } = require('./redis/redis-commands.js');
 
@@ -16,6 +18,8 @@ const createNewApolloServer = (service) => {
   const pgPool = new pg.Pool({
     //do this via an environment variable
     connectionString: service.db_uri
+    // 'postgres:///sample'
+
   });
     
   async function startApolloServer() {
@@ -48,6 +52,10 @@ const createNewApolloServer = (service) => {
     });
   
     await server.start();
+
+
+    // console.log('***THIS IS SCHEMA****', server.schema._typeMap);
+
     server.applyMiddleware({ app });
     
     app.use(express.json());
@@ -124,15 +132,57 @@ app.delete('/deleteServer/:port', (req, res) => {
       // console.log(server.address().port)
     }
   })
-  // console.log(services);
-  // for(let i = 0; i < services.length; i++){
-  //   console.log(services[i].port)
-  //   if(services[i].port == myPort) {
-  //     services.splice(i, 1);
-  //   }
-  // }
-  // console.log(services);
 });
+
+app.get('/shell', (req, res, next) => {
+  
+  //CREATE DB
+  exec("createdb -U postgres sample", (error, stdout, stderr) => {
+    if(error) {
+      console.log(`error: ${error.message}`);
+      return;
+    }
+    if(stderr) {
+      console.log(`stderr: ${stderr}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+
+  })
+  console.log('***BASE 1****');
+  return next();
+}, (req, res, next) => {
+
+  //IMPORT SQL SCRIPT TO CREATE TABLE
+  exec("psql -U postgres -d sample < '/Users/ekaterinavasileva_1/cs/senior portion/SpeQL8/src/NF.sql'", (error, stdout, stderr) => {
+    if(error) {
+      console.log(`error: ${error.message}`);
+      return;
+    }
+    if(stderr) {
+      console.log(`stderr: ${stderr}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+
+  })
+  console.log('***BASE 2****');
+  return next();
+}, (req, res, next) => {
+    exec("postgraphile -c postgress:///sample -s public -a -j", (error, stdout, stderr) => {
+    if(error) {
+      console.log(`error: ${error.message}`);
+      return;
+    }
+    if(stderr) {
+      console.log(`stderr: ${stderr}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+
+  })
+  console.log('***BASE 3***');
+})
 
 app.listen(3333, ()=> {
   console.log('listening for new APIs to spin up on port 3333')
