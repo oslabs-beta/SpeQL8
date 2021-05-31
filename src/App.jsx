@@ -150,34 +150,91 @@ const App = () => {
     e.target.classList.add('selected-button');
   }
 
-  // xAxis uses the 'weekday' as a key to build itself
-      // you can change it to anything you want
-      const data = [
-        // {
-        //   queryNumber: 1,
-        //   //dogs represe
-        //   'dogs': 1,
-        //   'cats': 2,
-        //   'pets': 3,
-        // },
-        // {
-        //   queryNumber: 2,
-        //   'mice': 4,
-        //   'dogs': 6,
-        //   'cats': 3,
-        //   'pets': 9,
-        // },
-        // {
-        //   queryNumber: 3,
-        //   'dogs': 8,
-        //   'cats': 4,
-        //   'pets': 12,
-        // },      
-      ]
+    // let queryNumber = 3;
+    // const [testDataArray, setTestDataArray] = useState([12,19])
+
+      const data = {
+        labels: [],
+        datasets: [
+          {
+            label: 'Time in ms',
+            data: [],
+            queries: [],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)',
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)',
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const queriesForBars = ['hey!'];
+
+      const defaultOptions = {
+        tooltips: {
+          callbacks: {
+            afterLabel: function(tooltipItem, data) {
+              return data.datasets[0].queries[tooltipItem.index];
+            },
+          }
+        },
+        scales: {
+          xAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                  fontColor: "white"
+                },
+              },
+            ],
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+                fontColor: "white"
+              },
+            },
+          ],
+        },
+        legend: {
+            labels: {
+                fontColor: "white",
+            }
+        }
+      };
 
       const [testData, setTestData] = useState(data);
+      const [queryNumber, setQueryNumber] = useState(1);
+      const [options, setOptions] = useState(defaultOptions);
+
+      // useEffect(()=> {
+      //   setTestDataArray([...testDataArray, lastQuerySpeed])
+      // }, [testData]); 
 
   const handleSaveClick = () => {
+    const copy = [...testData.datasets];
+    copy[0].data = [...copy[0].data, lastQuerySpeed];
+    copy[0].queries = [...copy[0].queries, lastQuery];
+
+    setTestData(prevState => (
+      // {...prevState, labels: [...prevState.labels, `Query #${queryNumber}`], datasets: copy}
+      {...prevState, labels: [...prevState.labels, `Query #${queryNumber}: ${currentSchema}`], datasets: copy}
+      ));
+    setQueryNumber(queryNumber + 1);
+      
    //delete if this works
   //  setDataSet([...dataSet, 
   //   {distance:lastQuerySpeed,
@@ -187,13 +244,13 @@ const App = () => {
   //     query: lastQuery,
   //   }
   //   ])
-    setTestData([...testData, 
-    {
-      queryNumber: 4,
-          'dogs': 3,
-          'cats': 7,
-          'pets': lastQuerySpeed,
-    }])
+    // setTestData([...testData, 
+    // {
+    //   queryNumber: 4,
+    //       'dogs': 3,
+    //       'cats': 7,
+    //       'pets': lastQuerySpeed,
+    // }])
   console.log("testing for handleSaveClick");
 
   }
@@ -238,6 +295,7 @@ const App = () => {
       handleCacheClick={handleCacheClick}
       testData={testData}
       setTestData={setTestData}
+      options={options}
       />
       <GraphiQL clasName="graphiql"
       editorTheme="material-ocean"

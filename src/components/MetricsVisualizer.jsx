@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ColumnChart from './ColumnChart';
 import StyledBarChart from './StyledBarChart';
+import VerticalBar from './VerticalBar';
 
 const MetricsVisualizer = (props) => {
 
@@ -10,7 +11,7 @@ const MetricsVisualizer = (props) => {
     const { handleCacheClick } = props;
 
     const { testData, setTestData } = props;
-
+    const { options, setOptions } = props;
 
   //within state, ignore the first element within TimeData (although this will have to live up a level if it's being set by the graphiQL play button)
     return (
@@ -22,7 +23,10 @@ const MetricsVisualizer = (props) => {
           <p>{lastQuerySpeed}<span className='milliseconds-display'>ms</span></p>
       </div>
       {/* <ColumnChart dataSet={dataSet} /> */}
-      <StyledBarChart testData={testData} setTestData={setTestData} />
+      {/* <StyledBarChart testData={testData} setTestData={setTestData} /> */}
+      <div className='vertical-bar'>
+      <VerticalBar testData={testData} options={options}/>
+      </div>
       </div>
     )
 }

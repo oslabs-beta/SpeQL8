@@ -35,7 +35,7 @@ import React, {useState} from 'react';
     && {
       ${({ backgroundColor, textColor }) => `
         ${backgroundColor ? `background: ${backgroundColor}` : ``};
-        ${textColor ? `color: ${textColor}` : `white`};
+        ${textColor ? `color: white` : `white`};
       `}
       ${TooltipLabel} {
         font-style: normal;
@@ -63,9 +63,11 @@ import React, {useState} from 'react';
     // e.g. 'date'
     const X_AXIS = {
       key: 'weekday',
+      
     }
   
     const Y_AXIS = {
+      
     }
   
     const CONFIG = {
