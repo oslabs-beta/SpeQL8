@@ -69,10 +69,12 @@ p {
 
 .mainForm {
   display: grid;
+  margin: 0 auto 0 5%;
 }
 
 .inputDiv {
   align-self: center;
+  margin: 0 auto 0 5%;
 }
 
 .main-container {
@@ -88,6 +90,8 @@ p {
   height: auto;
   width: 150px;
   text-align: center;
+  margin: 0 auto;
+  margin-top: 1rem;
 }
 
 h4 {
@@ -167,7 +171,7 @@ li {
 
 /* naming is confusing here - suggest changing schemaButton to 'schema-list-element' */
 
-.schemaButton {
+.schema-list-element {
   display: grid;
   transform: rotate(90deg);
   height: auto;
@@ -188,9 +192,8 @@ li {
   padding-bottom: 5px;
 }
 
-.schema-button:focus {
-  background-color: #c792ea;
-  color: #ff5370;
+.schema-button-selected {
+  border: 2px solid red;
 }
 
 .graphiql-container {
@@ -297,4 +300,17 @@ div.toolbar button.toolbar-button {
 .vertical-bar {
   margin: 0 auto;
   margin-top: 3rem;
+}
+
+.sparkle-hr {
+  text-align: center;
+  margin: 8px 0;
+}
+
+.no-schema-selected-prompt {
+  font-size: medium;
+}
+
+.none-selected-span {
+  color: #3b6b7e;
 }
