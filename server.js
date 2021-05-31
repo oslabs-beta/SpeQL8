@@ -12,13 +12,15 @@ const services = servicesModule.services;
 
 const { exec } = require("child_process");
 
-const multer  = require('multer')
-const upload = multer({  dest: __dirname + '/public/uploads/' })
+const multer = require("multer");
+const upload = multer({ dest: __dirname + "/public/uploads/" });
+const fs = require("fs");
 
 // REDIS COMMANDS
 const { redisController, cachePlugin } = require("./redis/redis-commands.js");
 
 const createNewApolloServer = (service) => {
+  console.log('this is service', service)
   const pgPool = new pg.Pool({
     //do this via an environment variable
     connectionString: service.db_uri,
@@ -139,13 +141,56 @@ app.delete("/deleteServer/:port", (req, res) => {
   });
 });
 
-app.post('/uploadFile', upload.single('myFile'), function (req, res, next) {
-  console.log('FILE', req.file);
-  console.log('BODY', req.body);
-  // req.file is the `avatar` file
-  // req.body will hold the text fields, if there were any
-  res.send(200);
-})
+app.post("/uploadFile", upload.single("myFile"), 
+(req, res, next) => {
+  // console.log("FILE", req.file);
+  fs.renameSync(
+    req.file.destination + req.file.filename,
+    req.file.destination + req.file.originalname
+  );
+  // req.file.filename = req.file.originalname;
+  req.p = req.file.destination + req.file.originalname;
+  console.log("FILE", req.file);
+  next();
+
+},
+async (req, res, next) => {
+  
+  console.log('***IN THE NEXT F****', req.p);
+
+  const promisify = (shellCommand) => {
+    const cmd = shellCommand;
+    return function () {
+      new Promise((resolve, reject) => {
+        exec(cmd, (error, stdout, stderr) => {
+          if (error) return reject(error);
+          if (stderr) return reject(new Error(stderr));
+          return resolve({ stdout, stderr });
+        });
+      });
+    };
+  };
+
+  const createDatabase = promisify("createdb -U postgres sample");
+  const importSQL = promisify(
+    `psql -U postgres -d sample < '${req.p}'`
+  );
+
+  await createDatabase();
+  await setTimeout(importSQL, 500);
+  next()
+},
+
+  (req, res, next) => {
+    let max = -Infinity;
+    services.forEach(service => {
+      if(max < service.port) max = service.port;
+    })
+    max += 1;
+    res.status(200).redirect('http://localhost:8080/');
+  }
+
+);
 
 // app.post('/getFilePath', (req, res) => {
 //   console.log(req.body);
@@ -193,7 +238,6 @@ app.get("/shell", (req, res, next) => {
   //       console.log('THREE')
   //     );
 });
-
 
 app.listen(3333, () => {
   console.log("listening for new APIs to spin up on port 3333");
