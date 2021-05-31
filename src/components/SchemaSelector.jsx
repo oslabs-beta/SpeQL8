@@ -127,6 +127,7 @@ const schemaDisplay = (props) => {
       port: newPort,
     };
 
+    //is this actually working? NO!
     services.push(newService);
 
     fetch('http://localhost:3333/newServer', {
