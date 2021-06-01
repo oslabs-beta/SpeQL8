@@ -71,7 +71,11 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.json', '.jsx', '.css', '.mjs'],
   },
-  plugins: [new HtmlWebpackPlugin({ template: 'index.html.ejs' })],
+  plugins: [
+    new HtmlWebpackPlugin({ 
+      template: 'index.html.ejs',
+     }),
+  ],
   devServer: {
     hot: true,
     // bypass simple localhost CORS restrictions by setting
