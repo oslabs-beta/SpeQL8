@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-const servicesModule = require("../modules/services");
+import { lastIndexOf } from "./datatest";
+const servicesModule = require("./services");
 const services = servicesModule.services;
 //these don't work - will need another solution...
 // const timeDataModule = require('./timeData');
 // const timeData = timeDataModule.timeData;
 // const newServerModule = require('./../newServerInstance');
 // const createNewApolloServer = newServerModule.allanExportTest;
-
-import Heading from "./Heading";
 
 const schemaDisplay = (props) => {
   // These are the react hooks
@@ -66,16 +65,25 @@ const schemaDisplay = (props) => {
     //When we click the delete button we want to do the following:
     //remove the button from the schemaList (where the name corresponds to the currentSchema)
     //reset currentSchema to none selected / blank string
+    let fromFileFlag;
+    services.forEach(service => {
+      if(service[port] === currentPort) {
+        fromFileFlag = service[fromFile]
+      }
+    })
+
     fetch(`http://localhost:3333/deleteServer/${currentPort}`, {
       method: "DELETE",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
       },
+      body: {fromFile: fromFileFlag}
     }).then((data) => {
       data.json();
       console.log(data);
     });
+
     updateSchemaList(
       schemaList.filter((el) => {
         return el !== currentSchema;
@@ -113,53 +121,49 @@ const schemaDisplay = (props) => {
     console.log("this is the event for the add schema buttton", e);
     e.preventDefault();
 
-    if (input !== "" && uriInput !== "") {
-      // console.log(timeData);
-      // let lastTimeData = timeData[timeData.length - 1].hash;
-      // console.log(`last time data is ${lastTimeData}`);
+    // console.log(timeData);
+    // let lastTimeData = timeData[timeData.length - 1].hash;
+    // console.log(`last time data is ${lastTimeData}`);
 
-      let lastAddedPort = services[services.length - 1].port;
-      console.log(`last added port is ${lastAddedPort}`);
-      const newPort = lastAddedPort + 1;
+    let lastAddedPort = services[services.length - 1].port;
+    console.log(`last added port is ${lastAddedPort}`);
+    const newPort = lastAddedPort + 1;
 
-      const newService = {
-        label: input,
-        db_uri: uriInput,
-        port: newPort,
-      };
+    const newService = {
+      label: input,
+      db_uri: uriInput,
+      port: newPort,
+      fromFile: false
+    };
 
-      //is this actually working? NO!
-      services.push(newService);
+    services.push(newService);
 
-      fetch("http://localhost:3333/newServer", {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newService),
-      })
-        .then((data) => data.json())
-        .then((results) => {
-          console.log(
-            "these are the results from the fetch request in the handle add",
-            results
-          );
-        });
+    fetch("http://localhost:3333/newServer", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newService),
+    })
+      .then((data) => data.json())
+      .then((results) => {
+        console.log(
+          "these are the results from the fetch request in the handle add",
+          results
+        );
+      });
 
-      updateSchemaList((prevState) => [...prevState, input]);
-      inputChange("");
-      changeUri("");
-    } else {
-      alert("enter info");
-    }
+    updateSchemaList((prevState) => [...prevState, input]);
+    inputChange("");
+    changeUri("");
   }
 
   function handleSchemaNameChange(e) {
     inputChange(e.target.value);
   }
 
-  function handleFileSubmit(e) {
+  async function handleFileSubmit(e) {
     e.preventDefault();
     const label = document.getElementById("schema-name-from-file").value;
     const form = document.getElementById("uploadFileForm");
@@ -167,14 +171,15 @@ const schemaDisplay = (props) => {
     const file = formData.get("myFile");
     const indexOfDot = file.name.lastIndexOf(".");
     const fileExtension = file.name.slice(`${indexOfDot}`);
+    console.log(fileExtension);
     if (fileExtension !== ".sql" && fileExtension !== ".tar") {
       alert("please upload .sql or .tar file");
       return;
     } else if (label.trim() === "") {
       alert("please provide a name for your database");
       return;
-    } else {
-    fetch("http://localhost:3333/uploadFile", {
+    } else
+      await fetch("http://localhost:3333/uploadFile", {
         method: "POST",
         mode: "cors",
         body: formData,
@@ -184,7 +189,6 @@ const schemaDisplay = (props) => {
         // .then(() => console.log(services))
         .then(() => updateSchemaList((prevState) => [...prevState, label]))
         // .then(() => console.log(schemaList));
-    }
   }
 
   //--------------------------------------------------------------------
@@ -207,44 +211,35 @@ const schemaDisplay = (props) => {
 
   // Html and form below
 
-  if (currentSchema === "None Selected") {
-    return (
-      <div className="selector">
-        <Heading />
-        <div className="inputDiv">
-          <p className="no-schema-selected-prompt">
-            Select a schema from the tabs to the right, or enter your own below
-            to get started
-          </p>
-          <span type="text" className="schemaInput">
-            Current Schema:{" "}
-            <span className="none-selected-span">{currentSchema}</span>
-          </span>
+  return (
+    <div>
+      <div className="inputDiv">
+        <span type="text" className="schemaInput">
+          Current Schema: {currentSchema}
+        </span>
+        <button onClick={handleDelete}>Delete</button>
+      </div>
+      <div>
+        <form id="mainForm">
+          <label className="label-text">Schema Name:</label>
+          <input
+            value={input}
+            type="text"
+            onChange={handleSchemaNameChange}
+            name="schema-name"
+          ></input>
           <br></br>
-          {/* <button onClick={handleDelete}>Delete</button> */}
-        </div>
-        <span className="sparkle-hr">✨ ✨ ✨ ✨ ✨</span>
-        <div className="mainForm">
-          <form id="mainForm">
-            <label className="label-text">Schema Name:</label>
-            <input
-              value={input}
-              type="text"
-              onChange={handleSchemaNameChange}
-              name="schema-name"
-            ></input>
-            <br></br>
-            <label className="label-text">DB URI:</label>
-            <input
-              value={uriInput}
-              type="text"
-              onChange={handleDbUri}
-              name="db-uri"
-            ></input>
-            <br></br>
-            <button id="addschema" type="submit" onClick={handleAdd}>
-              Add Schema
-            </button>
+          <label className="label-text">DB URI:</label>
+          <input
+            value={uriInput}
+            type="text"
+            onChange={handleDbUri}
+            name="db-uri"
+          ></input>
+          <br></br>
+          <button type="submit" onClick={handleAdd}>
+            Add Schema
+          </button>
           </form>
           <form
             action=""
@@ -263,68 +258,12 @@ const schemaDisplay = (props) => {
               Upload file
             </button>
           </form>
-          {/* this is going to live above the GraphiQL component and below the metrics visualizer */}
-          {/* <ul>{schemaButtonList}</ul> */}
-        </div>
+
+        {/* this is going to live above the GraphiQL component and below the metrics visualizer */}
+        {/* <ul>{schemaButtonList}</ul> */}
       </div>
-    );
-  } else {
-    return (
-      <div className="selector">
-        <Heading />
-        <div className="inputDiv">
-          <span type="text" className="schemaInput">
-            Current Schema: {currentSchema}
-          </span>
-          <br></br>
-          <button onClick={handleDelete}>Delete</button>
-        </div>
-        <span className="sparkle-hr">✨ ✨ ✨ ✨ ✨</span>
-        <div className="mainForm">
-          <form id="mainForm">
-            <label className="label-text">Schema Name:</label>
-            <input
-              value={input}
-              type="text"
-              onChange={handleSchemaNameChange}
-              name="schema-name"
-            ></input>
-            <br></br>
-            <label className="label-text">DB URI:</label>
-            <input
-              value={uriInput}
-              type="text"
-              onChange={handleDbUri}
-              name="db-uri"
-            ></input>
-            <br></br>
-            <button id="addschema" type="submit" onClick={handleAdd}>
-              Add Schema
-            </button>
-            </form>
-          <form
-            action=""
-            enctype="multipart/form-data"
-            id="uploadFileForm"
-            onSubmit={(e) => handleFileSubmit(e)}
-          >
-            <input
-              type="text"
-              id="schema-name-from-file"
-              name="schema-name-from-file"
-            ></input>
-            <label for="myFileId">Select a file:</label>
-            <input type="file" name="myFile" id="myFileId"></input>
-            <button type="submit" value="submit file" id="submitFile">
-              Upload file
-            </button>
-          </form>
-          {/* this is going to live above the GraphiQL component and below the metrics visualizer */}
-          {/* <ul>{schemaButtonList}</ul> */}
-        </div>
-      </div>
-    );
-  }
+    </div>
+  );
 };
 
 // export const SchemaButtons = () => (<ul>{schemaButtonList}</ul>);

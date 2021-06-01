@@ -1,5 +1,5 @@
 // REDIS
-const Redis = require('ioredis');
+const Redis = require("ioredis");
 const redis = new Redis();
 
 // SOCKET.IO STUFF
@@ -8,13 +8,13 @@ let updater = {};
 
 // SOME FUNCTIONS
 const addEntry = async (hashCode) => {
-    await redis.incr('totalEntries');
-    const key = await redis.get('totalEntries', async (err, res) => {
-        if (err) throw err;
-        else await redis.set(res, hashCode);
-    })
-    return key;
-}
+  await redis.incr("totalEntries");
+  const key = await redis.get("totalEntries", async (err, res) => {
+    if (err) throw err;
+    else await redis.set(res, hashCode);
+  });
+  return key;
+};
 
 const timer = (t0, t1) => {
     const start = parseInt(t0[0])*1000000 + parseInt(t0[1]);

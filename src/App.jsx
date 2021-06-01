@@ -105,7 +105,6 @@ const App = () => {
       //this does not work correctly if we delete SWAPI first and then try and click Users
       let gqlApiString;
       let port;
-
       for (let i = 0; i < services.length; i++) {
         console.log(`LABEL for ${i} iteration: ${services[i].label}`);
         if (services[i].label === currentSchema) {
