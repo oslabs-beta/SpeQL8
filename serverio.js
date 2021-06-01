@@ -78,7 +78,7 @@ app.post(
     createNewApolloServer(newServiceFromFile);
     res.locals.service = newServiceFromFile;
     res.status(200).json(res.locals.service);
-  }
+  })
 
 app.delete("/deleteServer/:port", (req, res) => {
   console.log("***IN DELETE****");
