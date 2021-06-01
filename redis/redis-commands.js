@@ -26,24 +26,8 @@ const timer = (t0, t1) => {
 const redisController = {};
 
 redisController.serveMetrics = async (req, res, next) => {
-    // const key = await redis.get('totalEntries', (err, result) => {
-    //     if (err) {
-    //         console.log(err);
-    //         return next(err);
-    //     } else {
-    //         return result;
-    //     }
-    // });
-    // const hashCode = await redis.get(key, (err, result) => {
-    //     if (err) {
-    //         console.log(err);
-    //         return next(err);
-    //     } else {
-    //         return result;
-    //     }
-    // })
+
     const start = await redis.time();
-    
     redis.hgetall(req.params['hash'], async (err, result) => {
         if (err) {
             console.log(err);
@@ -58,6 +42,7 @@ redisController.serveMetrics = async (req, res, next) => {
     });
 };
 
+// APOLLO SERVER PLUGIN
 const cachePlugin = {
     requestDidStart(context) {
       console.log('cache plugin fired');
@@ -97,5 +82,5 @@ const cachePlugin = {
   }; 
 
   
-
+// EXPORT MIDDLEWARE, APOLLO PLUGIN, AND UPDATER OBJECT
 module.exports = { redisController, cachePlugin, updater };
