@@ -8,8 +8,11 @@
     "build": "NODE_ENV=production webpack",
     "dev": "NODE_ENV=development webpack serve --open & NODE_ENV=development nodemon ./serverio.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Allan Maclean, Ekaterina Vasileva, Russell Hayward, Akiko Hagio",
+  "license": "MIT",
+  "bin": {
+    "speql8": "bin/cliTest.js"
+  },
   "dependencies": {
     "apollo-log": "^1.0.1",
     "apollo-server-express": "^2.25.0",
