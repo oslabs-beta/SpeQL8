@@ -1,6 +1,6 @@
 {
   "name": "speql8",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Speculative metrics for your GraphQL-powered application.",
   "main": "index.jsx",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "NODE_ENV=production webpack",
     "dev": "NODE_ENV=development webpack serve --open & NODE_ENV=development nodemon ./serverio.js"
   },
-  "author": "Allan Maclean, Ekaterina Vasileva, Russell Hayward, Akiko Hagio",
+  "author": "Allan MacLean, Ekaterina Vasileva, Russell Hayward, Akiko Hagio",
   "license": "MIT",
   "bin": {
     "speql8": "bin/cliTest.js"
@@ -28,6 +28,7 @@
     "react-chartjs-2": "2.11.1",
     "react-hot-loader": "^4.13.0",
     "regenerator-runtime": "^0.13.7",
+    "shelljs": "^0.8.4",
     "socket.io": "^4.1.2",
     "socket.io-client": "^4.1.2",
     "styled-chart": "^1.3.5",
