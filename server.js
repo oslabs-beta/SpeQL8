@@ -213,8 +213,8 @@ app.post(
   "/uploadFile",
   upload.single("myFile"),
   (req, res, next) => {
-    // console.log("FILE", req.file);
-    // console.log("BODY", req.body);
+    console.log("FILE", req.file);
+    console.log("BODY", req.body);
     fs.renameSync(
       req.file.destination + req.file.filename,
       req.file.destination + req.file.originalname
@@ -223,6 +223,8 @@ app.post(
     req.fileExtension = req.file.originalname.slice(-4);
     req.p = req.file.destination + req.file.originalname;
     req.label = JSON.stringify(req.body).slice(26, -2);
+    console.log(req.label);
+    console.log("FILE", req.file);
     next();
   },
   async (req, res, next) => {

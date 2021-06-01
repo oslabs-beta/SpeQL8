@@ -147,23 +147,6 @@ const schemaDisplay = (props) => {
           );
         });
 
-      // if (input === '' && uriInput === '') {
-      //   setClickable(false);
-      //  } else {
-      //   setClickable(true);
-      //  }
-      // if (input === '' && uriInput === '') {
-      //   document.getElementById("Button").disabled = true;
-      // }
-      //else {
-      //disabled = false;
-      // }
-      // if (uriInput === '') {
-      //   document. getElementById("Button"). disabled = true;
-      // } else {
-      //   disabled = false;
-      // }
-
       updateSchemaList((prevState) => [...prevState, input]);
       inputChange("");
       changeUri("");
@@ -176,7 +159,7 @@ const schemaDisplay = (props) => {
     inputChange(e.target.value);
   }
 
-  async function handleFileSubmit(e) {
+  function handleFileSubmit(e) {
     e.preventDefault();
     const label = document.getElementById("schema-name-from-file").value;
     const form = document.getElementById("uploadFileForm");
@@ -184,15 +167,14 @@ const schemaDisplay = (props) => {
     const file = formData.get("myFile");
     const indexOfDot = file.name.lastIndexOf(".");
     const fileExtension = file.name.slice(`${indexOfDot}`);
-    console.log(fileExtension);
     if (fileExtension !== ".sql" && fileExtension !== ".tar") {
       alert("please upload .sql or .tar file");
       return;
     } else if (label.trim() === "") {
       alert("please provide a name for your database");
       return;
-    } else
-      await fetch("http://localhost:3333/uploadFile", {
+    } else {
+    fetch("http://localhost:3333/uploadFile", {
         method: "POST",
         mode: "cors",
         body: formData,
@@ -202,6 +184,7 @@ const schemaDisplay = (props) => {
         // .then(() => console.log(services))
         .then(() => updateSchemaList((prevState) => [...prevState, label]))
         // .then(() => console.log(schemaList));
+    }
   }
 
   //--------------------------------------------------------------------
@@ -261,6 +244,23 @@ const schemaDisplay = (props) => {
             <br></br>
             <button id="addschema" type="submit" onClick={handleAdd}>
               Add Schema
+            </button>
+          </form>
+          <form
+            action=""
+            enctype="multipart/form-data"
+            id="uploadFileForm"
+            onSubmit={(e) => handleFileSubmit(e)}
+          >
+            <input
+              type="text"
+              id="schema-name-from-file"
+              name="schema-name-from-file"
+            ></input>
+            <label for="myFileId">Select a file:</label>
+            <input type="file" name="myFile" id="myFileId"></input>
+            <button type="submit" value="submit file" id="submitFile">
+              Upload file
             </button>
           </form>
           {/* this is going to live above the GraphiQL component and below the metrics visualizer */}
