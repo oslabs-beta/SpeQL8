@@ -8,15 +8,15 @@ const { makeSchemaAndPlugin } = require("postgraphile-apollo-server");
 const { ApolloLogPlugin } = require("apollo-log");
 const cors = require("cors");
 
-//MOVING THIS UP TOP
+// EXPRESS SERVER + CORS
 const app = express();
 app.use(express.static("dist"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-//THIS CAN'T CONNECT - why?
 
+// DYNAMIC SERVER SWITCHING
 app.post("/newServer", (req, res) => {
   console.log("inside the /newServer route");
   console.log(req.body);
@@ -66,10 +66,8 @@ const {
   cachePlugin,
   updater,
 } = require("./redis/redis-commands.js");
-// const Redis = require('ioredis');
-// const redis = new Redis();
 
-//ALLAN'S SOCKET IO STUFF//
+// SOCKET.IO
 const server = http.createServer(app);
 
 const socketIo = require("socket.io")(server, {
@@ -102,6 +100,7 @@ server.listen(3333, () => {
   console.log("listening for new APIs to spin up on port 3333");
 });
 
+// APOLLO SERVER + POSTGRAPHILE
 const createNewApolloServer = (service) => {
   const pgPool = new pg.Pool({
     //do this via an environment variable
@@ -152,16 +151,19 @@ const createNewApolloServer = (service) => {
     };
     app.use(cors(corsOptions));
 
+    // REDIS CACHED METRICS
     app.get("/redis/:hash", redisController.serveMetrics, (req, res) => {
       console.log("Result from Redis cache: ");
       console.log(res.locals.metrics);
       return res.status(200).send(res.locals.metrics);
     });
 
+    // EXPRESS UNKNOWN ROUTE HANDLER
     app.use("*", (req, res) => {
       return res.status(404).send("404 Not Found");
     });
 
+    // EXPRESS GLOBAL ERROR HANDLER
     app.use((err, req, res, next) => {
       console.log(err);
       return res.status(500).send("Internal Server Error " + err);
@@ -176,12 +178,14 @@ const createNewApolloServer = (service) => {
     return myApp;
   }
 
+  // CALL APOLLO SERVER FOR GRAPHIQL
   return startApolloServer().catch((e) => {
     console.error(e);
     process.exit(1);
   });
 };
 
+// NEW APOLLO SERVER PER SCHEMA
 const myServers = [];
 
 services.forEach((service) => {
