@@ -1,6 +1,6 @@
 {
   "name": "speql8",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Speculative metrics for your GraphQL-powered application.",
   "main": "index.jsx",
   "scripts": {
