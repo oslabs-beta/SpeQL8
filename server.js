@@ -128,6 +128,7 @@ app.post("/newServer", (req, res) => {
 
 app.delete("/deleteServer/:port", (req, res) => {
   console.log("***IN DELETE****");
+  console.log(req.body);
   const myPort = req.params.port;
   const connectionKey = `6::::${myPort}`;
   myServers.forEach((server) => {
@@ -138,6 +139,7 @@ app.delete("/deleteServer/:port", (req, res) => {
     } else if (server._connectionKey == connectionKey) {
       // console.log(server.address().port)
       console.log(`server on ${myPort} is about to be shut down`);
+
       server.close();
       // console.log(server.address().port)
     }
@@ -164,45 +166,24 @@ app.post(
     next();
   },
   async (req, res, next) => {
-    // const promisify = (shellCommand) => {
-    //   const cmd = shellCommand;
-    //   return async function () {
-    //     new Promise((resolve, reject) =>
-    //       exec(cmd, setTimeout((error, stdout, stderr) => {
-    //         if (error) return reject(error);
-    //         if (stderr) return reject(new Error(stderr));
-    //         return resolve({ stdout, stderr });
-    //       }, 500)));
-
-    //   };
-    // };
 
     const promisify = async (cmd) => {
       try {
         const { stdout, stderr } = await exec(cmd);
-        console.log("stdout:", stdout);
-        console.log("stderr:", stderr);
+        // console.log("stdout:", stdout);
+        // console.log("stderr:", stderr);
       } catch (e) {
         console.error(e);
       }
     };
-    //****CHECK POINT******
-    // console.log(req.fileExtension);
 
     await promisify(`createdb -U postgres '${req.label}'`);
-    // console.log(result);
-    // console.log(createDatabase);
     let importSQL;
     if (req.fileExtension === ".sql") {
       await promisify(`psql -U postgres -d ${req.label} < '${req.p}'`);
     } else if (req.fileExtension === ".tar") {
       await promisify(`pg_restore -U postgres -d ${req.label} < '${req.p}'`);
     }
-
-    // console.log('result 2', result)
-    //  const result = await createDatabase();
-    //  console.log(result)
-    //  await importSQL();
     next();
   },
 
@@ -213,9 +194,10 @@ app.post(
       label: `${req.label}`,
       db_uri: `postgres:///${req.label}`,
       port: port,
+      fromFile: true
     };
 
-    // const result = await createNewApolloServer(newServiceFromFile);
+    createNewApolloServer(newServiceFromFile);
     res.locals.service = newServiceFromFile;
     res.status(200).json(res.locals.service);
   }

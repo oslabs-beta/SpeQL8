@@ -65,16 +65,25 @@ const schemaDisplay = (props) => {
     //When we click the delete button we want to do the following:
     //remove the button from the schemaList (where the name corresponds to the currentSchema)
     //reset currentSchema to none selected / blank string
+    let fromFileFlag;
+    services.forEach(service => {
+      if(service[port] === currentPort) {
+        fromFileFlag = service[fromFile]
+      }
+    })
+
     fetch(`http://localhost:3333/deleteServer/${currentPort}`, {
       method: "DELETE",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
       },
+      body: {fromFile: fromFileFlag}
     }).then((data) => {
       data.json();
       console.log(data);
     });
+
     updateSchemaList(
       schemaList.filter((el) => {
         return el !== currentSchema;
@@ -124,6 +133,7 @@ const schemaDisplay = (props) => {
       label: input,
       db_uri: uriInput,
       port: newPort,
+      fromFile: false
     };
 
     services.push(newService);
