@@ -10,8 +10,6 @@ import Heading from "./Heading";
 import SchemaSelector from "./SchemaSelector";
 import MetricsVisualizer from "./MetricsVisualizer";
 import SchemaButtonsContainer from "./SchemaButtonsContainer";
-import ShellButton from "./ShellButton";
-import UploadFile from "./uploadFile";
 
 
 /*
@@ -71,7 +69,7 @@ const App = () => {
       //this does not work correctly if we delete SWAPI first and then try and click Users
       let gqlApiString;
       let port;
-
+      console.log(services);
       for (let i = 0; i < services.length; i++) {
         console.log(`LABEL for ${i} iteration: ${services[i].label}`);
         if (services[i].label === currentSchema) {
@@ -121,37 +119,6 @@ const App = () => {
     ]);
   };
 
-  const runShellScript = () => {
-    fetch('http://localhost:3333/shell')
-      .then(data => data.json())
-      .then(data => console.log(data))
-  }
-
-  const getFilePath = () => {
-    const filePath = document.getElementById("myFile").files[0];
-
-    const formData  = new FormData();
-
-    formData.append('file', new Blob([formData]));
-
-    // for(const name in data) {
-    //   formData.append(name, data[name]);
-    // }
-    // const two = 'two';
-    // // const body = {}
-    console.log(filePath);
-    console.log(typeof filePath);
-    fetch("http://localhost:3333/getFilePath", {
-      method: "POST",
-      body: formData,
-      mode: "cors"
-    })
-    .then(data => data.json())
-    .then(data => console.log(data))
-    .catch(err => console.log(err))
-      
-  }
-
   return (
     //this outermost div MUST have the id of 'graphiql' in order for graphiql to render properly
     //the defaultQuery prop currently relates to the default 'Users' DB - not currently working as intended
@@ -169,8 +136,6 @@ const App = () => {
         currentPort={currentPort}
         setCurrentPort={setCurrentPort}
       />
-      <UploadFile getFilePath={getFilePath}/>
-      <ShellButton runShellScript={runShellScript}/>
       <MetricsVisualizer
         lastQuerySpeed={lastQuerySpeed}
         dataSet={dataSet}

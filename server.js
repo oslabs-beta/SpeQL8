@@ -10,7 +10,9 @@ const cors = require("cors");
 const servicesModule = require("./src/services");
 const services = servicesModule.services;
 
-const { exec } = require("child_process");
+// const { exec } = require("child_process");
+const util = require("util");
+const exec = util.promisify(require("child_process").exec);
 
 const multer = require("multer");
 const upload = multer({ dest: __dirname + "/public/uploads/" });
@@ -18,9 +20,10 @@ const fs = require("fs");
 
 // REDIS COMMANDS
 const { redisController, cachePlugin } = require("./redis/redis-commands.js");
+const { ConsoleLogger } = require("typedoc/dist/lib/utils");
 
 const createNewApolloServer = (service) => {
-  console.log('this is service', service)
+  console.log("this is service", service);
   const pgPool = new pg.Pool({
     //do this via an environment variable
     connectionString: service.db_uri,
@@ -141,103 +144,82 @@ app.delete("/deleteServer/:port", (req, res) => {
   });
 });
 
-app.post("/uploadFile", upload.single("myFile"), 
-(req, res, next) => {
-  // console.log("FILE", req.file);
-  fs.renameSync(
-    req.file.destination + req.file.filename,
-    req.file.destination + req.file.originalname
-  );
-  // req.file.filename = req.file.originalname;
-  req.p = req.file.destination + req.file.originalname;
-  console.log("FILE", req.file);
-  next();
-
-},
-async (req, res, next) => {
-  
-  console.log('***IN THE NEXT F****', req.p);
-
-  const promisify = (shellCommand) => {
-    const cmd = shellCommand;
-    return function () {
-      new Promise((resolve, reject) => {
-        exec(cmd, (error, stdout, stderr) => {
-          if (error) return reject(error);
-          if (stderr) return reject(new Error(stderr));
-          return resolve({ stdout, stderr });
-        });
-      });
-    };
-  };
-
-  const createDatabase = promisify("createdb -U postgres sample");
-  const importSQL = promisify(
-    `psql -U postgres -d sample < '${req.p}'`
-  );
-
-  await createDatabase();
-  await setTimeout(importSQL, 500);
-  next()
-},
-
+app.post(
+  "/uploadFile",
+  upload.single("myFile"),
   (req, res, next) => {
-    let max = -Infinity;
-    services.forEach(service => {
-      if(max < service.port) max = service.port;
-    })
-    max += 1;
-    res.status(200).redirect('http://localhost:8080/');
-  }
+    console.log("HERE");
+    console.log("FILE", req.file);
+    console.log("BODY", req.body);
+    fs.renameSync(
+      req.file.destination + req.file.filename,
+      req.file.destination + req.file.originalname
+    );
+    // req.file.filename = req.file.originalname;
+    req.fileExtension = req.file.originalname.slice(-4);
+    req.p = req.file.destination + req.file.originalname;
+    req.label = JSON.stringify(req.body).slice(26, -2);
+    console.log(req.label);
+    console.log("FILE", req.file);
+    next();
+  },
+  async (req, res, next) => {
+    // const promisify = (shellCommand) => {
+    //   const cmd = shellCommand;
+    //   return async function () {
+    //     new Promise((resolve, reject) =>
+    //       exec(cmd, setTimeout((error, stdout, stderr) => {
+    //         if (error) return reject(error);
+    //         if (stderr) return reject(new Error(stderr));
+    //         return resolve({ stdout, stderr });
+    //       }, 500)));
 
-);
+    //   };
+    // };
 
-// app.post('/getFilePath', (req, res) => {
-//   console.log(req.body);
-//   res.send(200);
-// })
-
-app.get("/shell", (req, res, next) => {
-  const promisify = (shellCommand) => {
-    const cmd = shellCommand;
-    return function () {
-      new Promise((resolve, reject) => {
-        exec(cmd, (error, stdout, stderr) => {
-          if (error) return reject(error);
-          if (stderr) return reject(new Error(stderr));
-          return resolve({ stdout, stderr });
-        });
-      });
+    const promisify = async (cmd) => {
+      try {
+        const { stdout, stderr } = await exec(cmd);
+        console.log("stdout:", stdout);
+        console.log("stderr:", stderr);
+      } catch (e) {
+        console.error(e);
+      }
     };
-  };
+    //****CHECK POINT******
+    // console.log(req.fileExtension);
 
-  const createDatabase = promisify("createdb -U postgres sample");
-  const importSQL = promisify(
-    "psql -U postgres -d sample < '/Users/ekaterinavasileva_1/cs/senior portion/SpeQL8/src/NF.sql'"
-  );
+    await promisify(`createdb -U postgres '${req.label}'`);
+    // console.log(result);
+    // console.log(createDatabase);
+    let importSQL;
+    if (req.fileExtension === ".sql") {
+      await promisify(`psql -U postgres -d ${req.label} < '${req.p}'`);
+    } else if (req.fileExtension === ".tar") {
+      await promisify(`pg_restore -U postgres -d ${req.label} < '${req.p}'`);
+    }
 
-  createDatabase();
-  setTimeout(importSQL, 500);
+    // console.log('result 2', result)
+    //  const result = await createDatabase();
+    //  console.log(result)
+    //  await importSQL();
+    next();
+  },
 
-  // const startPostgraphile = promisify("postgraphile -c postgress:///sample -s public -a -j");
-  // startPostgraphile();
-  // exec(
-  //       "postgraphile -c postgress:///sample -s public -a -j",
-  //       (error, stdout, stderr) => {
-  //         if (error) {
-  //           console.log(`error: ${error.message}`);
-  //           return;
-  //         }
-  //         if (stderr) {
-  //           console.log("stderr: ", stderr);
-  //           return;
-  //         }
-  //         console.log("stdout: ", stdout);
-  //         return 1;
-  //       },
-  //       console.log('THREE')
-  //     );
-});
+  async (req, res, next) => {
+    const port = services[services.length - 1].port + 1;
+
+    const newServiceFromFile = {
+      label: `${req.label}`,
+      db_uri: `postgres:///${req.label}`,
+      port: port,
+    };
+
+    // const result = await createNewApolloServer(newServiceFromFile);
+    res.locals.service = newServiceFromFile;
+    res.status(200).json(res.locals.service);
+  }
+);
 
 app.listen(3333, () => {
   console.log("listening for new APIs to spin up on port 3333");
