@@ -161,7 +161,7 @@ const schemaDisplay = (props) => {
 
   function handleFileSubmit(e) {
     e.preventDefault();
-    const label = document.getElementById("schema-name-from-file").value;
+    const label = document.getElementById("schemaNameFromFile").value;
     const form = document.getElementById("uploadFileForm");
     const formData = new FormData(form);
     const file = formData.get("myFile");
@@ -270,7 +270,7 @@ const schemaDisplay = (props) => {
             Select a file:
           </label>
           <input type="file" name="myFile" id="myFileId"></input>
-          <button type="submit" value="submit file" id="submitFile">
+          <button type="submit" value="submit file" id="submitFile" onClick={() => console.log('click')}>
             Upload file
           </button>
         </form>
