@@ -127,7 +127,6 @@ const createNewApolloServer = (service) => {
     );
 
     const options = {};
-
     const server = new ApolloServer({
       schema,
       plugins: [plugin, cachePlugin, ApolloLogPlugin(options)],
