@@ -1,0 +1,42 @@
+# docker-compose.yml
+services:
+  redis:
+    container_name: redis
+    image: redis:latest
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
+  app:
+    depends_on:
+      - redis
+    build: ./
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 3333:3333
+      - 4000:4000
+      - 4001:4001
+      - 4002:4002
+      - 4003:4003
+      - 4004:4004
+      - 4005:4005
+      - 4006:4006
+      - 4007:4007
+      - 4008:4008
+      - 4009:4009
+      - 4010:4010
+      - 4011:4011
+      - 4012:4012
+      - 4013:4013
+      - 4014:4014
+      - 4015:4015
+      - 4016:4016
+      - 4017:4017
+      - 4018:4018
+      - 4019:4019
+      - 4020:4020
+      - 4021:4021
+      - 4022:4022
+      - 4032:4023
+    environment:
+      - NODE_ENV=production
+      - PORT=3333
+    command: sh -c 'npm i && npm run build && npm start'

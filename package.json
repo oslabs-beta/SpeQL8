@@ -10,9 +10,6 @@
   },
   "author": "Allan MacLean, Ekaterina Vasileva, Russell Hayward, Akiko Hagio",
   "license": "MIT",
-  "bin": {
-    "speql8": "bin/cliTest.js"
-  },
   "dependencies": {
     "apollo-log": "^1.0.1",
     "apollo-server-express": "^2.25.0",

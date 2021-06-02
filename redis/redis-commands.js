@@ -1,6 +1,6 @@
 // REDIS
 const Redis = require("ioredis");
-const redis = new Redis();
+const redis = new Redis({ host: "redis", port: 6379 });
 
 // SOCKET.IO STUFF
 let updater = {};
@@ -82,5 +82,6 @@ const cachePlugin = {
   }; 
 
   
-// EXPORT MIDDLEWARE, APOLLO PLUGIN, AND UPDATER OBJECT
-module.exports = { redisController, cachePlugin, updater };
+// EXPORT MIDDLEWARE, APOLLO PLUGIN, UPDATER OBJECT
+// EXPORT REDIS INSTANCE FOR DOCKER-COMPOSE
+module.exports = { redisController, cachePlugin, updater, redis };
