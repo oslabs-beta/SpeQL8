@@ -1,18 +1,15 @@
 {
   "name": "speql8",
   "version": "1.0.2",
-  "description": "Speculative metrics for your GraphQL-powered application.",
+  "description": "Speculative GraphQL metrics for your Postgres database",
   "main": "index.jsx",
   "scripts": {
     "start": "NODE_ENV=production node ./serverio.js",
     "build": "NODE_ENV=production webpack",
     "dev": "NODE_ENV=development webpack serve --open & NODE_ENV=development nodemon ./serverio.js"
   },
-  "author": "Allan MacLean, Ekaterina Vasileva, Russell Hayward, Akiko Hagio",
+  "author": "Allan MacLean, Ekaterina Vasileva, Russell Hayward, Akiko Hagio Dulaney",
   "license": "MIT",
-  "bin": {
-    "speql8": "bin/cliTest.js"
-  },
   "dependencies": {
     "apollo-log": "^1.0.1",
     "apollo-server-express": "^2.25.0",
