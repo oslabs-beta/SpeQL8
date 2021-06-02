@@ -20,13 +20,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-
 // DYNAMIC SERVER SWITCHING
 app.post("/newServer", (req, res) => {
   console.log("inside the /newServer route");
   console.log(req.body);
-  // services.push(req.body);
-  console.log(services);
+  //please note - logging services on the backend will not be accurate!
+  // console.log(services);
+
   createNewApolloServer(req.body)
     .then((data) => myServers.push(data))
     .catch((err) => console.log(err));
@@ -49,7 +49,6 @@ app.post(
     next();
   },
   async (req, res, next) => {
-
     const promisify = async (cmd) => {
       try {
         const { stdout, stderr } = await exec(cmd);
@@ -77,24 +76,26 @@ app.post(
       label: `${req.label}`,
       db_uri: `postgres:///${req.label}`,
       port: port,
-      fromFile: true
+      fromFile: true,
     };
 
-    services.push(newServiceFromFile)
+    services.push(newServiceFromFile);
 
-    console.log('new service', newServiceFromFile);
+    console.log("new service", newServiceFromFile);
 
-    createNewApolloServer(newServiceFromFile)
-      .then(result => myServers.push(result));
+    createNewApolloServer(newServiceFromFile).then((result) =>
+      myServers.push(result)
+    );
     res.locals.service = newServiceFromFile;
     res.status(200).json(res.locals.service);
-  })
+  }
+);
 
 app.delete("/deleteServer/:port", (req, res) => {
   console.log("***IN DELETE****");
   console.log(services);
   const myPort = req.params.port;
-  console.log('myPort', myPort);
+  console.log("myPort", myPort);
   const connectionKey = `6::::${myPort}`;
   myServers.forEach(async (server) => {
     // console.log("ITERATING THROUGH MYSERVERS")
@@ -108,23 +109,23 @@ app.delete("/deleteServer/:port", (req, res) => {
     } else if (server._connectionKey == connectionKey) {
       // console.log(server.address().port)
 
-    // services.forEach(async service => {
-    //     console.log('in the loop', service.port);
-    //     if(service.port == myPort && service.fromFile === true) {
-    //       try {
-    //         console.log('HERE!!!******')
-    //         const { stdout, stderr } = await exec(`dropdb -U postgres ${service.label};`)
-    //         console.log('AND HERE!!!******')
-    //         console.log(stdout);
-    //         console.log(stderr);
-    //       } catch (e) {
-    //         console.error(e);
-    //       }
-    //     }
-    //   })
+      // services.forEach(async service => {
+      //     console.log('in the loop', service.port);
+      //     if(service.port == myPort && service.fromFile === true) {
+      //       try {
+      //         console.log('HERE!!!******')
+      //         const { stdout, stderr } = await exec(`dropdb -U postgres ${service.label};`)
+      //         console.log('AND HERE!!!******')
+      //         console.log(stdout);
+      //         console.log(stderr);
+      //       } catch (e) {
+      //         console.error(e);
+      //       }
+      //     }
+      //   })
       console.log(`server on ${myPort} is about to be shut down`);
-     await server.close();
-    
+      await server.close();
+
       // console.log(server.address().port)
     } else {
       console.log("nothing got hit!");
@@ -133,22 +134,24 @@ app.delete("/deleteServer/:port", (req, res) => {
   console.log(services);
 
   services.forEach(async (service, index) => {
-    console.log('in the loop', service.port);
-        if(service.port == myPort) {
-          if(service.fromFile === true) {
-          try {
-            console.log('HERE!!!******')
-            const { stdout, stderr } = await exec(`dropdb -U postgres ${service.label};`)
-            console.log('AND HERE!!!******')
-            console.log(stdout);
-            console.log(stderr);
-          } catch (e) {
-            console.error(e);
-          }
+    console.log("in the loop", service.port);
+    if (service.port == myPort) {
+      if (service.fromFile === true) {
+        try {
+          console.log("HERE!!!******");
+          const { stdout, stderr } = await exec(
+            `dropdb -U postgres ${service.label};`
+          );
+          console.log("AND HERE!!!******");
+          console.log(stdout);
+          console.log(stderr);
+        } catch (e) {
+          console.error(e);
         }
-     services.splice(index, 1);
       }
-  })
+      services.splice(index, 1);
+    }
+  });
   // for (let i = 0; i < services.length; i++) {
   //   // console.log(services[i].port);
   //   if (services[i].port == myPort) {
@@ -203,6 +206,7 @@ server.listen(3333, () => {
 });
 
 // APOLLO SERVER + POSTGRAPHILE
+// We need some logic in here to handle if the string is malformed. App crashes otherwise.
 const createNewApolloServer = (service) => {
   const pgPool = new pg.Pool({
     //do this via an environment variable
