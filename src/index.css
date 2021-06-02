@@ -136,7 +136,7 @@ input, label {
   width: 150px;
   text-align: center;
   margin: 0 auto;
-  margin-top: 10rem;
+  /* margin-top: 10rem; */
 
 }
 
@@ -342,49 +342,43 @@ div.toolbar button.toolbar-button {
   color: #3b6b7e;
 }
 
-.docExplorerWrap {
-  /* display: inline !important;
-  width: 100px !important;
-  /* min-width: calc((100vh - 250px)/3);
-  max-width: calc((100vh - 250px)/3); */
-}
-
-.editorWrap {
-  /* width: calc((100vw - 250px)/3*2); */
-
+.metrics {
+  grid-column: 3/4;
+  grid-row: 2/3;
+  position: relative;
 }
 
 .chartjs-render-monitor {
   max-height: 50vh !important;
   width: 90vh !important;
-  font-size: 3vh !important;
-  margin-bottom: 2vh !important;
-  position: absolute !important;
-  left: 550px;
+  margin: 0 auto;
 }
 
-
-  @media screen and (max-height: 900px) {
+  @media screen and (max-height: 950px) {
 
   .query-speed-box {
-  /* display: grid; */
   border: 1px solid #c792ea;
-  height: auto;
-  width: 150px;
+  height: 171px;
+  width: 100px;
   text-align: center;
-  margin: 0 auto;
-  margin-top: 1rem;
   position: absolute;
-  left: 300px;
-  bottom: 350px;
+  bottom: 0px;
+  left: 0px;
+  font-size: .75rem;
+}
 
-  /* grid-column 3/4; */
-  /* grid-row: 2/3; */
-  
+.milliseconds-display {
+  font-size: .75rem;
+}
+
+
+
+
+.chartjs-render-monitor {
+  font-size: 10px !important;
+  position: absolute !important;
+  bottom: 0px;
+  margin-left: 135px;
 }
 
 }
-
-  /* position: relative;
-  left: 30px;
-  bottom: 20px; */

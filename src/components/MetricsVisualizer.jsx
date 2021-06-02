@@ -14,7 +14,7 @@ const MetricsVisualizer = (props) => {
 
   //within state, ignore the first element within TimeData (although this will have to live up a level if it's being set by the graphiQL play button)
   return (
-    <div>
+    <div className="metrics">
       <div className="query-speed-box">
         <button onClick={handleSaveClick}>Save As Comparison</button>
         <button onClick={handleCacheClick}>Run Query From Cache</button>
