@@ -1,6 +1,7 @@
 body {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
   min-height: 100vh;
   font-family: "Lato", sans-serif;
   background-color: #001a17;
@@ -11,7 +12,10 @@ body {
 .selector {
   display: grid;
   color: #c3e88d;
-  grid-column: 1 / 2;
+  padding-left: 10px;
+  padding-right: 10px;
+  /* grid-column: 1 / 2; */
+  grid-template-columns: auto-fill;
   grid-row: 1 / 5;
   align-items: start;
   align-content: start;
@@ -28,7 +32,11 @@ body {
   color: #eeffff;
   border: none;
   border-radius: 3px;
-  padding: 5px, 10px, 5px, 10px;
+  padding: 4px 7px;
+}
+
+#deleteButton {
+  margin-left: 3px;
 }
 
 .query-speed-box button {
@@ -64,17 +72,51 @@ p {
 #goldThing {
   height: 80px;
   width: 120px;
-  margin-left: 25px;
+  margin-left: 9px;
 }
 
-.mainForm {
-  display: grid;
-  margin: 0 auto 0 5%;
+#currentSchema {
+  margin-right: 3px;
+  font-family: "Lato", sans-serif;
+  color: #c3e88d;
+}
+
+div#forms {
+  display: flex;
+  flex-direction: column;
+  max-width: 235px;
+}
+
+form#mainForm {
+  margin-bottom: 20px;
+}
+
+#formText {
+  font-size: small;
+  font-family: "Lato", sans-serif;
+}
+
+#schemaNameFromFile, #schemaNameFromDbUri, #dbUri {
+  border-radius: 6px;
+  border: 1px black solid;
+  background-color: #daf5ff;
+}
+
+form input {
+  margin-bottom: 5px;
+}
+
+form label {
+  margin-bottom: 2px;
+}
+
+input, label {
+  display: block;
 }
 
 .inputDiv {
   align-self: center;
-  margin: 0 auto 0 5%;
+  max-width: 235px;
 }
 
 .main-container {
@@ -82,7 +124,6 @@ p {
   grid-template-columns: [first] 250px [line2] 40px [line3] auto [end];
   grid-template-rows: [top] 40px [row1-end] auto [row2-end] 30px [graphiql-top] 300px [bottom];
   height: 100%;
-  overflow-y: scroll;
 }
 
 .query-speed-box {
@@ -109,6 +150,7 @@ h4 {
   font-family: "Poiret One";
   text-align: center;
   align-content: center;
+  max-width: 235px;
 }
 
 p {
@@ -131,28 +173,6 @@ p {
 .input-div {
   color: #89ddff;
 }
-
-/* .header {
-  width: 500px;
-  margin: 0 auto;
-  text-align: center;
-} */
-
-/* .titleDiv {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 999;
-  width: 100%;
-  height: 23px;
-} */
-
-/* #graphiql {
-  height: 75%;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-} */
 
 li {
   display: inline;
@@ -177,7 +197,6 @@ li {
   height: auto;
   width: auto;
   padding-bottom: 20px;
-  /* margin-right: 5px; */
   margin-bottom: 15%;
 }
 
@@ -305,6 +324,7 @@ div.toolbar button.toolbar-button {
 .sparkle-hr {
   text-align: center;
   margin: 8px 0;
+  max-width: 235px;
 }
 
 .no-schema-selected-prompt {
