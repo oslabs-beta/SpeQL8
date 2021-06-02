@@ -174,7 +174,7 @@ const schemaDisplay = (props) => {
       alert("please provide a name for your database");
       return;
     } else {
-    fetch("http://localhost:3333/uploadFile", {
+      fetch("http://localhost:3333/uploadFile", {
         method: "POST",
         mode: "cors",
         body: formData,
@@ -182,8 +182,8 @@ const schemaDisplay = (props) => {
         .then((JSONdata) => JSONdata.json())
         .then((data) => services.push(data))
         // .then(() => console.log(services))
-        .then(() => updateSchemaList((prevState) => [...prevState, label]))
-        // .then(() => console.log(schemaList));
+        .then(() => updateSchemaList((prevState) => [...prevState, label]));
+      // .then(() => console.log(schemaList));
     }
   }
 
@@ -207,125 +207,78 @@ const schemaDisplay = (props) => {
 
   // Html and form below
 
-  if (currentSchema === "None Selected") {
-    return (
-      <div className="selector">
-        <Heading />
-        <div className="inputDiv">
-          <p className="no-schema-selected-prompt">
-            Select a schema from the tabs to the right, or enter your own below
-            to get started
-          </p>
-          <span type="text" className="schemaInput">
-            Current Schema:{" "}
-            <span className="none-selected-span">{currentSchema}</span>
-          </span>
-          <br></br>
-          {/* <button onClick={handleDelete}>Delete</button> */}
-        </div>
-        <span className="sparkle-hr">✨ ✨ ✨ ✨ ✨</span>
-        <div className="mainForm">
-          <form id="mainForm">
-            <label className="label-text">Schema Name:</label>
-            <input
-              value={input}
-              type="text"
-              onChange={handleSchemaNameChange}
-              name="schema-name"
-            ></input>
-            <br></br>
-            <label className="label-text">DB URI:</label>
-            <input
-              value={uriInput}
-              type="text"
-              onChange={handleDbUri}
-              name="db-uri"
-            ></input>
-            <br></br>
-            <button id="addschema" type="submit" onClick={handleAdd}>
-              Add Schema
-            </button>
-          </form>
-          <form
-            action=""
-            enctype="multipart/form-data"
-            id="uploadFileForm"
-            onSubmit={(e) => handleFileSubmit(e)}
-          >
-            <input
-              type="text"
-              id="schema-name-from-file"
-              name="schema-name-from-file"
-            ></input>
-            <label for="myFileId">Select a file:</label>
-            <input type="file" name="myFile" id="myFileId"></input>
-            <button type="submit" value="submit file" id="submitFile">
-              Upload file
-            </button>
-          </form>
-          {/* this is going to live above the GraphiQL component and below the metrics visualizer */}
-          {/* <ul>{schemaButtonList}</ul> */}
-        </div>
+  return (
+    <div className="selector">
+      <Heading />
+      <div className="inputDiv">
+        <span type="text" className="schemaInput">
+          Current Schema:
+          <br />
+          <span id="currentSchema">{currentSchema}</span>
+        </span>
+        {currentSchema !== "None Selected" && (
+          <button id="buttonDelete" onClick={handleDelete}>
+            Delete
+          </button>
+        )}
       </div>
-    );
-  } else {
-    return (
-      <div className="selector">
-        <Heading />
-        <div className="inputDiv">
-          <span type="text" className="schemaInput">
-            Current Schema: {currentSchema}
-          </span>
-          <br></br>
-          <button onClick={handleDelete}>Delete</button>
-        </div>
-        <span className="sparkle-hr">✨ ✨ ✨ ✨ ✨</span>
-        <div className="mainForm">
-          <form id="mainForm">
-            <label className="label-text">Schema Name:</label>
-            <input
-              value={input}
-              type="text"
-              onChange={handleSchemaNameChange}
-              name="schema-name"
-            ></input>
-            <br></br>
-            <label className="label-text">DB URI:</label>
-            <input
-              value={uriInput}
-              type="text"
-              onChange={handleDbUri}
-              name="db-uri"
-            ></input>
-            <br></br>
-            <button id="addschema" type="submit" onClick={handleAdd}>
-              Add Schema
-            </button>
-            </form>
-          <form
-            action=""
-            enctype="multipart/form-data"
-            id="uploadFileForm"
-            onSubmit={(e) => handleFileSubmit(e)}
-          >
-            <input
-              type="text"
-              id="schema-name-from-file"
-              name="schema-name-from-file"
-            ></input>
-            <label for="myFileId">Select a file:</label>
-            <input type="file" name="myFile" id="myFileId"></input>
-            <button type="submit" value="submit file" id="submitFile">
-              Upload file
-            </button>
-          </form>
-          {/* this is going to live above the GraphiQL component and below the metrics visualizer */}
-          {/* <ul>{schemaButtonList}</ul> */}
-        </div>
+      <span className="sparkle-hr">✨ ✨ ✨ ✨ ✨</span>
+      <div className="mainForm">
+        <span id="formText">Run with connection string...</span>
+        <form id="mainForm" class="forms">
+          <label for="schemaNameFromDbUri" className="label-text">
+            Schema Name:
+          </label>
+          <input
+            value={input}
+            type="text"
+            onChange={handleSchemaNameChange}
+            id="schemaNameFromDbUri"
+            name="schema-name"
+          ></input>
+          <label for="dbUri" className="label-text">
+            PostgreSQL URI:
+          </label>
+          <input
+            value={uriInput}
+            type="text"
+            onChange={handleDbUri}
+            id="dbUri"
+            name="db-uri"
+          ></input>
+          <button id="addschema" type="submit" onClick={handleAdd}>
+            Add Schema
+          </button>
+        </form>
+        <span id="formText">...or upload .sql or .tar file</span>
+        <form
+          action=""
+          enctype="multipart/form-data"
+          id="uploadFileForm"
+          class="forms"
+          onSubmit={(e) => handleFileSubmit(e)}
+        >
+          <label for="schemaNameFromFile" class="label-text">
+            Schema name:
+          </label>
+          <input
+            type="text"
+            id="schemaNameFromFile"
+            name="schema-name-from-file"
+          ></input>
+          <label for="myFileId" class="label-text">
+            Select a file:
+          </label>
+          <input type="file" name="myFile" id="myFileId"></input>
+          <button type="submit" value="submit file" id="submitFile">
+            Upload file
+          </button>
+        </form>
+        {/* this is going to live above the GraphiQL component and below the metrics visualizer */}
+        {/* <ul>{schemaButtonList}</ul> */}
       </div>
-    );
-  }
+    </div>
+  );
 };
-
 // export const SchemaButtons = () => (<ul>{schemaButtonList}</ul>);
 export default schemaDisplay;
