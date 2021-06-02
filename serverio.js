@@ -199,7 +199,7 @@ socketIo.on("connection", (socket) => {
 });
 
 server.listen(3333, () => {
-  console.log("\x1b[35m", "listening for new APIs to spin up on port 3333");
+  console.log("Success!");
 });
 
 // APOLLO SERVER + POSTGRAPHILE
@@ -274,18 +274,17 @@ const createNewApolloServer = (service) => {
     //const { url } = await server.listen();
     // accesing via port 8080
     const myApp = app.listen({ port: service.port });
-    console.log("\x1b[32m")
-    console.log(`  .:: ::                        .::::    .::                 `);
-    console.log(`.::    .::                    .::    .:: .::          .:     `);
-    console.log(` .::      .: .::     .::    .::       .::.::       .::  .::  `);
-    console.log(`   .::    .:  .::  .:   .:: .::       .::.::      .::     .: `);
-    console.log(`      .:: .:   .::.::::: .::.::       .::.::        .:: .:   `);
-    console.log(`.::    .::.:: .:: .:          .:: .: .:: .::      .::     .::`);
-    console.log(`  .:: ::  .::       .::::       .:: ::   .::::::::  .::::    `);
-    console.log(`          .::                        .:                      `);
+    console.log("\x1b[32m", `  .:: ::                        .::::    .::                 `);
+    console.log("\x1b[32m", `.::    .::                    .::    .:: .::          .:     `);
+    console.log("\x1b[32m", ` .::      .: .::     .::    .::       .::.::       .::  .::  `);
+    console.log("\x1b[32m", `   .::    .:  .::  .:   .:: .::       .::.::      .::     .: `);
+    console.log("\x1b[32m", `      .:: .:   .::.::::: .::.::       .::.::        .:: .:   `);
+    console.log("\x1b[32m", `.::    .::.:: .:: .:          .:: .: .:: .::      .::     .::`);
+    console.log("\x1b[32m", `  .:: ::  .::       .::::       .:: ::   .::::::::  .::::    `);
+    console.log("\x1b[32m", `          .::                        .:                      `);
+    console.log("\x1b[35m", `Port ${service.port} active`);
     console.log("\x1b[35m", 
-      `🔮 Fortunes being told at http://localhost:${service.port}${server.graphqlPath}✨`
-    );
+    `🔮 Fortunes being told at http://localhost:3333 ✨`);
     return myApp;
   }
 
