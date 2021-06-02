@@ -3,10 +3,12 @@ body {
   margin: 0;
   box-sizing: border-box;
   min-height: 100vh;
+  min-width: 100vw;
   font-family: "Lato", sans-serif;
   background-color: #001a17;
   background-image: url("https://cdn.discordapp.com/attachments/825520363151556638/847539075778478120/mirrored-squares.png");
   /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+  position: absolute;
 }
 
 .selector {
@@ -120,10 +122,12 @@ input, label {
 }
 
 .main-container {
+  position: relative;
   display: grid;
   grid-template-columns: [first] 250px [line2] 40px [line3] auto [end];
   grid-template-rows: [top] 40px [row1-end] auto [row2-end] 30px [graphiql-top] 300px [bottom];
   height: 100%;
+  min-width: 100%;
 }
 
 .query-speed-box {
@@ -132,10 +136,8 @@ input, label {
   width: 150px;
   text-align: center;
   margin: 0 auto;
-  margin-top: 1rem;
-  position: absolute;
-  right: 30px;
-  top: 20px;
+  margin-top: 10rem;
+
 }
 
 h4 {
@@ -222,6 +224,8 @@ li {
   /* display: grid; */
   grid-column: 2 / 4;
   grid-row: 4 / 5;
+  margin-top: 1vh;
+  position: relative;
 }
 
 .graphiql-container {
@@ -351,7 +355,36 @@ div.toolbar button.toolbar-button {
 }
 
 .chartjs-render-monitor {
-  height: 50vh !important;
+  max-height: 50vh !important;
   width: 90vh !important;
   font-size: 3vh !important;
+  margin-bottom: 2vh !important;
+  position: absolute !important;
+  left: 550px;
 }
+
+
+  @media screen and (max-height: 900px) {
+
+  .query-speed-box {
+  /* display: grid; */
+  border: 1px solid #c792ea;
+  height: auto;
+  width: 150px;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 1rem;
+  position: absolute;
+  left: 300px;
+  bottom: 350px;
+
+  /* grid-column 3/4; */
+  /* grid-row: 2/3; */
+  
+}
+
+}
+
+  /* position: relative;
+  left: 30px;
+  bottom: 20px; */

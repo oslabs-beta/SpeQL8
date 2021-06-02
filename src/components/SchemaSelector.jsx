@@ -217,7 +217,7 @@ const schemaDisplay = (props) => {
           <span id="currentSchema">{currentSchema}</span>
         </span>
         {currentSchema !== "None Selected" && (
-          <button id="buttonDelete" onClick={handleDelete}>
+          <button id="buttonDelete" onClick={handleDelete} >
             Delete
           </button>
         )}
