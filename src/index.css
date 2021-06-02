@@ -9,6 +9,10 @@ body {
   /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
 }
 
+p {
+  margin: 0;
+}
+
 .selector {
   display: grid;
   color: #c3e88d;
@@ -120,6 +124,7 @@ label {
 .inputDiv {
   align-self: center;
   max-width: 235px;
+  height: 60px;
 }
 
 .main-container {
@@ -183,6 +188,8 @@ li {
 
 .schemaInput {
   color: #89ddff;
+  margin: 0;
+  padding: 0;
 }
 
 .schema-button-list {
@@ -336,8 +343,10 @@ div.toolbar button.toolbar-button {
 
 .none-selected-span {
   color: #3b6b7e;
+  margin: 0;
+  padding: 0;
 }
 
 .none-selected-text {
-  font-size: 0.8rem;
+  color: #c3e88d;
 }
