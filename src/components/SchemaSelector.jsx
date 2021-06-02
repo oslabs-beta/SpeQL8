@@ -170,7 +170,7 @@ const schemaDisplay = (props) => {
     if (fileExtension !== ".sql" && fileExtension !== ".tar") {
       alert("please upload .sql or .tar file");
       return;
-    } else if (label.trim() === "") {
+    } else if (label.trim() === "" || label ==="") {
       alert("please provide a name for your database");
       return;
     } else {
@@ -184,6 +184,9 @@ const schemaDisplay = (props) => {
         // .then(() => console.log(services))
         .then(() => updateSchemaList((prevState) => [...prevState, label]));
       // .then(() => console.log(schemaList));
+        // .then(() => inputChange(""))
+        // .then(() => changeUri(""));
+        document.getElementById("schemaNameFromFile").value = "";
     }
   }
 
@@ -287,8 +290,6 @@ const schemaDisplay = (props) => {
             Upload file
           </button>
         </form>
-        {/* this is going to live above the GraphiQL component and below the metrics visualizer */}
-        {/* <ul>{schemaButtonList}</ul> */}
       </div>
     </div>
   );

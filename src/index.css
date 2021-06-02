@@ -3,10 +3,12 @@ body {
   margin: 0;
   box-sizing: border-box;
   min-height: 100vh;
+  min-width: 100vw;
   font-family: "Lato", sans-serif;
   background-color: #001a17;
   background-image: url("https://cdn.discordapp.com/attachments/825520363151556638/847539075778478120/mirrored-squares.png");
   /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+  position: absolute;
 }
 
 p {
@@ -130,10 +132,12 @@ label {
 /* test comment */
 
 .main-container {
+  position: relative;
   display: grid;
   grid-template-columns: [first] 250px [line2] 40px [line3] auto [end];
   grid-template-rows: [top] 40px [row1-end] auto [row2-end] 30px [graphiql-top] 300px [bottom];
   height: 100%;
+  min-width: 100%;
 }
 
 .query-speed-box {
@@ -142,7 +146,8 @@ label {
   width: 150px;
   text-align: center;
   margin: 0 auto;
-  margin-top: 1rem;
+  /* margin-top: 10rem; */
+
 }
 
 h4 {
@@ -228,9 +233,11 @@ li {
 }
 
 .graphiql-container {
-  display: grid;
+  /* display: grid; */
   grid-column: 2 / 4;
   grid-row: 4 / 5;
+  margin-top: 1vh;
+  position: relative;
 }
 
 .graphiql-container {
@@ -351,4 +358,45 @@ div.toolbar button.toolbar-button {
 
 .none-selected-text {
   color: #c3e88d;
+}
+
+.metrics {
+  grid-column: 3/4;
+  grid-row: 2/3;
+  position: relative;
+}
+
+.chartjs-render-monitor {
+  max-height: 50vh !important;
+  width: 90vh !important;
+  margin: 0 auto;
+}
+
+  @media screen and (max-height: 950px) {
+
+  .query-speed-box {
+  border: 1px solid #c792ea;
+  height: 171px;
+  width: 100px;
+  text-align: center;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  font-size: .75rem;
+}
+
+.milliseconds-display {
+  font-size: .75rem;
+}
+
+
+
+
+.chartjs-render-monitor {
+  font-size: 10px !important;
+  position: absolute !important;
+  bottom: 0px;
+  margin-left: 135px;
+}
+
 }

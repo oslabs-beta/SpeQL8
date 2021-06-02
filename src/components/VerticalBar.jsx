@@ -65,7 +65,7 @@ import { withTheme } from "styled-components";
 const VerticalBar = (props) => {
   const { testData, setTestData } = props;
   const { options, setOptions } = props;
-  return <Bar data={testData} options={options} />;
+  return <Bar data={testData} options={options}/>;
 };
 
 export default VerticalBar;

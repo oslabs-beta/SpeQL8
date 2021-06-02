@@ -3,6 +3,7 @@ const http = require("http");
 const servicesModule = require("./src/modules/services");
 const services = servicesModule.services;
 const pg = require("pg");
+const path = require("path");
 const { ApolloServer } = require("apollo-server-express");
 const { makeSchemaAndPlugin } = require("postgraphile-apollo-server");
 const { ApolloLogPlugin } = require("apollo-log");
@@ -74,10 +75,10 @@ app.post(
     const port = services[services.length - 1].port + 1;
 
     const newServiceFromFile = {
-      label: `${req.label}`,
+      label: req.label,
       db_uri: `postgres:///${req.label}`,
       port: port,
-      fromFile: true
+      fromFile: req.file.originalname
     };
 
     services.push(newServiceFromFile)
@@ -91,73 +92,47 @@ app.post(
   })
 
 app.delete("/deleteServer/:port", (req, res) => {
-  console.log("***IN DELETE****");
+  // console.log("***IN DELETE****");
   console.log(services);
   const myPort = req.params.port;
-  console.log('myPort', myPort);
+  // console.log('myPort', myPort);
   const connectionKey = `6::::${myPort}`;
   myServers.forEach(async (server) => {
-    // console.log("ITERATING THROUGH MYSERVERS")
-    // console.log(`MYPORT:${myPort}`);
-    // console.log(`SERVERCONNECTIONKEY: ${server._connectionKey}`)
-    // console.log(server);
     if (myPort == 4000) {
       console.log(
         "You may not close port 4000. Graphiql must be provided an active GraphQL API (of which there will always be one running on 4000)"
       );
     } else if (server._connectionKey == connectionKey) {
-      // console.log(server.address().port)
-
-    // services.forEach(async service => {
-    //     console.log('in the loop', service.port);
-    //     if(service.port == myPort && service.fromFile === true) {
-    //       try {
-    //         console.log('HERE!!!******')
-    //         const { stdout, stderr } = await exec(`dropdb -U postgres ${service.label};`)
-    //         console.log('AND HERE!!!******')
-    //         console.log(stdout);
-    //         console.log(stderr);
-    //       } catch (e) {
-    //         console.error(e);
-    //       }
-    //     }
-    //   })
       console.log(`server on ${myPort} is about to be shut down`);
      await server.close();
-    
-      // console.log(server.address().port)
     } else {
       console.log("nothing got hit!");
     }
   });
-  console.log(services);
+  // console.log(services);
 
   services.forEach(async (service, index) => {
     console.log('in the loop', service.port);
         if(service.port == myPort) {
-          if(service.fromFile === true) {
+          if(service.fromFile) {
           try {
-            console.log('HERE!!!******')
             const { stdout, stderr } = await exec(`dropdb -U postgres ${service.label};`)
-            console.log('AND HERE!!!******')
             console.log(stdout);
             console.log(stderr);
           } catch (e) {
             console.error(e);
           }
+
+          try {
+            fs.unlinkSync(path.resolve(__dirname, `./public/uploads/${service.fromFile}`));
+            // console.log('FILE REMOVED')
+          } catch(err) {
+            console.error(err)
+          }
         }
      services.splice(index, 1);
       }
   })
-  // for (let i = 0; i < services.length; i++) {
-  //   // console.log(services[i].port);
-  //   if (services[i].port == myPort) {
-  //     if(services[i].fromFile === true) {
-
-  //     }
-  //     services.splice(i, 1);
-  //   }
-  // }
 
   console.log(services);
 });
