@@ -133,6 +133,9 @@ input, label {
   text-align: center;
   margin: 0 auto;
   margin-top: 1rem;
+  position: absolute;
+  right: 30px;
+  top: 20px;
 }
 
 h4 {
@@ -216,7 +219,7 @@ li {
 }
 
 .graphiql-container {
-  display: grid;
+  /* display: grid; */
   grid-column: 2 / 4;
   grid-row: 4 / 5;
 }
@@ -333,4 +336,22 @@ div.toolbar button.toolbar-button {
 
 .none-selected-span {
   color: #3b6b7e;
+}
+
+.docExplorerWrap {
+  /* display: inline !important;
+  width: 100px !important;
+  /* min-width: calc((100vh - 250px)/3);
+  max-width: calc((100vh - 250px)/3); */
+}
+
+.editorWrap {
+  /* width: calc((100vw - 250px)/3*2); */
+
+}
+
+.chartjs-render-monitor {
+  height: 50vh !important;
+  width: 90vh !important;
+  font-size: 3vh !important;
 }
