@@ -1,28 +1,156 @@
 body {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
   min-height: 100vh;
-  background-color: #09141c;
+  font-family: "Lato", sans-serif;
+  background-color: #001a17;
+  background-image: url("https://cdn.discordapp.com/attachments/825520363151556638/847539075778478120/mirrored-squares.png");
+  /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
 }
+
+.selector {
+  display: grid;
+  color: #c3e88d;
+  padding-left: 10px;
+  padding-right: 10px;
+  /* grid-column: 1 / 2; */
+  grid-template-columns: auto-fill;
+  grid-row: 1 / 5;
+  align-items: start;
+  align-content: start;
+  background-color: rgba(4, 0, 53, 0.548);
+  border-right: 4px solid #c792ea;
+  background-image: url("https://cdn.discordapp.com/attachments/825520363151556638/847147619544989706/SpeQL82.png");
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: contain;
+}
+
+.selector button {
+  background: linear-gradient(#657099, #0f111a);
+  color: #eeffff;
+  border: none;
+  border-radius: 3px;
+  padding: 4px 7px;
+}
+
+#deleteButton {
+  margin-left: 3px;
+}
+
+.query-speed-box button {
+  background: rgba(4, 0, 53, 0.548);
+  color: #eeffff;
+  border: none;
+  border-bottom: 1px solid #c792ea;
+  padding: 10px;
+  width: 100%;
+}
+
+.query-speed-box button:hover {
+  cursor: pointer;
+  color: #ff5370;
+}
+
 #root {
   height: 100vh;
 }
-h1,
-h3,
+
+h1 h3,
 h4,
 p {
-  color: rgb(41, 185, 115);
+  color: #c3e88d;
+}
+
+#catchPhrase {
+  font-size: small;
+  margin-top: -10px;
+  font-family: "Lato", sans-serif;
+}
+
+#goldThing {
+  height: 80px;
+  width: 120px;
+  margin-left: 9px;
+}
+
+#currentSchema {
+  margin-right: 3px;
+  font-family: "Lato", sans-serif;
+  color: #c3e88d;
+}
+
+div#forms {
+  display: flex;
+  flex-direction: column;
+  max-width: 235px;
+}
+
+form#mainForm {
+  margin-bottom: 20px;
+}
+
+#formText {
+  font-size: small;
+  font-family: "Lato", sans-serif;
+}
+
+#schemaNameFromFile, #schemaNameFromDbUri, #dbUri {
+  border-radius: 6px;
+  border: 1px black solid;
+  background-color: #daf5ff;
+}
+
+form input {
+  margin-bottom: 5px;
+}
+
+form label {
+  margin-bottom: 2px;
+}
+
+input, label {
+  display: block;
+}
+
+.inputDiv {
+  align-self: center;
+  max-width: 235px;
 }
 
 .main-container {
-  height: 100vh;
+  display: grid;
+  grid-template-columns: [first] 250px [line2] 40px [line3] auto [end];
+  grid-template-rows: [top] 40px [row1-end] auto [row2-end] 30px [graphiql-top] 300px [bottom];
+  height: 100%;
 }
 
 .query-speed-box {
-  border: 2px solid red;
-  height: 150px;
+  border: 1px solid #c792ea;
+  height: auto;
   width: 150px;
   text-align: center;
+  margin: 0 auto;
+  margin-top: 1rem;
+}
+
+h4 {
+  margin: 0;
+  background-color: #0f111a;
+}
+
+.query-speed-box p {
+  background-color: #0f111a;
+  height: auto;
+  margin: 0;
+}
+
+.heading {
+  font-family: "Poiret One";
+  text-align: center;
+  align-content: center;
+  max-width: 235px;
 }
 
 p {
@@ -35,70 +163,174 @@ p {
 
 .column-chart {
   display: inline-block;
+  width: 100%;
 }
 
 .label-text {
-  color: rgb(41, 185, 115);
+  color: #89ddff;
 }
 
 .input-div {
-  color: rgb(41, 185, 115);
+  color: #89ddff;
 }
-
-/* .header {
-  width: 500px;
-  margin: 0 auto;
-  text-align: center;
-} */
-
-/* .titleDiv {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 999;
-  width: 100%;
-  height: 23px;
-} */
-
-/* #graphiql {
-  height: 75%;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-} */
 
 li {
   display: inline;
 }
 
 .schemaInput {
-  color: rgb(41, 185, 115);
+  color: #89ddff;
 }
 
 .schema-button-list {
-  margin: 0;
-  padding: 0;
-  margin-top: 1rem;
+  display: grid;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  justify-content: end;
 }
 
 /* naming is confusing here - suggest changing schemaButton to 'schema-list-element' */
 
-.schemaButton {
-  margin: 0;
-  padding: 0;
+.schema-list-element {
+  display: grid;
+  transform: rotate(90deg);
+  height: auto;
+  width: auto;
+  padding-bottom: 20px;
+  margin-bottom: 15%;
 }
 
 .schema-button {
-  border: 1px solid #09141c;
-  padding: 10px;
-  border-top-left-radius: 25px;
+  border: 2px solid #c792ea;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  color: #c3e88d;
+  background-color: rgba(4, 0, 53, 0.548);
+  font-size: medium;
+  padding-top: 10px;
+  padding-bottom: 5px;
 }
 
-/* .schema-button:focus {
-  border: 2px solid rgb(41, 185, 115);
-} */
+.schema-button-selected {
+  border: 2px solid red;
+}
 
-.selected-button {
-  border: 2px solid rgb(41, 185, 115);
-  box-shadow: 0px 3px 15px rgba(177, 230, 206, 0.845);
+.graphiql-container {
+  display: grid;
+  grid-column: 2 / 4;
+  grid-row: 4 / 5;
+}
+
+.graphiql-container {
+  color: #c3e88d;
+  font-family: "Lato", sans-serif;
+}
+
+div.editorWrap {
+  overflow-x: scroll;
+}
+
+div.graphiql-container div.topBar {
+  background: linear-gradient(#090d33, #000);
+  border-bottom: 1px solid goldenrod;
+}
+
+div.topBar div.title {
+  font-size: 28px;
+  font-family: "Poiret One";
+}
+
+div.execute-button-wrap button.execute-button {
+  background: linear-gradient(#657099, #0f111a);
+  box-shadow: none;
+  border: 1px solid #0f111a;
+  fill: #eeffff;
+}
+
+div.toolbar button.toolbar-button {
+  background: linear-gradient(#657099, #0f111a);
+  color: #eeffff;
+  box-shadow: none;
+}
+
+.graphiql-container .docExplorerShow {
+  background: linear-gradient(#090d33, #000);
+  border-bottom: 1px solid goldenrod;
+  color: #c3e88d;
+}
+
+.graphiql-container .resultWrap {
+  border-left: 1px solid goldenrod;
+}
+
+.graphiql-container .result-window .CodeMirror-gutters {
+  background: linear-gradient(#090d33, #000);
+  color: #eeffff;
+  border-color: goldenrod;
+}
+
+.graphiql-container .secondary-editor-title {
+  background: linear-gradient(#090d33, #000);
+  border-bottom: 1px solid goldenrod;
+  border-top: none;
+  font-variant: small-caps;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.graphiql-container .secondary-editor-title div {
+  color: #89ddff !important;
+}
+
+.graphiql-container .docExplorerWrap,
+.graphiql-container .historyPaneWrap {
+  background: #0f111a;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+  border-right: 1px solid goldenrod;
+}
+
+.graphiql-container .doc-explorer {
+  background: linear-gradient(#090d33, #000);
+  font-family: "Poiret One";
+  /* font-variant: small-caps; */
+  letter-spacing: 1px;
+  font-size: 20px;
+}
+
+.graphiql-container button,
+.graphiql-container input {
+  color: #ff5370;
+}
+
+.graphiql-container .doc-explorer-contents,
+.graphiql-container .history-contents {
+  background-color: #0f111a;
+  border-top: 1px solid goldenrod;
+}
+
+.graphiql-container .search-box {
+  border-bottom: 1px solid #c3e88d;
+}
+
+.graphiql-container .search-box > input {
+  background-color: #0f111a;
+}
+
+.vertical-bar {
+  margin: 0 auto;
+  margin-top: 3rem;
+}
+
+.sparkle-hr {
+  text-align: center;
+  margin: 8px 0;
+  max-width: 235px;
+}
+
+.no-schema-selected-prompt {
+  font-size: medium;
+}
+
+.none-selected-span {
+  color: #3b6b7e;
 }

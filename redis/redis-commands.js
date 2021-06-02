@@ -2,9 +2,9 @@
 const Redis = require("ioredis");
 const redis = new Redis();
 
-// TIME DATA
-// const timeDataModule = require('./src/timeData');
-// const timeData = timeDataModule.timeData;
+// SOCKET.IO STUFF
+let updater = {};
+
 
 // SOME FUNCTIONS
 const addEntry = async (hashCode) => {
@@ -16,96 +16,86 @@ const addEntry = async (hashCode) => {
   return key;
 };
 
+const timer = (t0, t1) => {
+    const start = parseInt(t0[0])*1000000 + parseInt(t0[1]);
+    const stop = parseInt(t1[0])*1000000 + parseInt(t1[1]);
+    return stop - start;
+}
+
 // EXPRESS MIDDLEWARE
 const redisController = {};
 
 redisController.serveMetrics = async (req, res, next) => {
-  const key = await redis.get("totalEntries", (err, result) => {
-    if (err) {
-      console.log(err);
-      return next(err);
-    } else {
-      return result;
-    }
-  });
-  const hashCode = await redis.get(key, (err, result) => {
-    if (err) {
-      console.log(err);
-      return next(err);
-    } else {
-      return result;
-    }
-  });
-  redis.hgetall(hashCode, (err, result) => {
-    if (err) {
-      console.log(err);
-      return next(err);
-    } else {
-      res.locals.metrics = result;
-      return next();
-    }
-  });
+    // const key = await redis.get('totalEntries', (err, result) => {
+    //     if (err) {
+    //         console.log(err);
+    //         return next(err);
+    //     } else {
+    //         return result;
+    //     }
+    // });
+    // const hashCode = await redis.get(key, (err, result) => {
+    //     if (err) {
+    //         console.log(err);
+    //         return next(err);
+    //     } else {
+    //         return result;
+    //     }
+    // })
+    const start = await redis.time();
+    
+    redis.hgetall(req.params['hash'], async (err, result) => {
+        if (err) {
+            console.log(err);
+            return next(err);
+        } else {
+            const stop = await redis.time();
+            result.cacheTime = await timer(start, stop);
+            res.locals.metrics = result;
+
+            return next();
+        }
+    });
 };
 
-// APOLLO SERVER CACHEPLUGIN
 const cachePlugin = {
-  requestDidStart(context) {
-    console.log("cache plugin fired");
-    const clientQuery = context.request.query;
-    const cq = Object.values(clientQuery);
-    if (
-      cq[11] !== "I" &&
-      cq[12] !== "n" &&
-      cq[13] !== "t" &&
-      cq[14] !== "r" &&
-      cq[15] !== "o" &&
-      cq[16] !== "s" &&
-      cq[17] !== "p" &&
-      cq[18] !== "e"
-    ) {
-      return {
-        async willSendResponse(requestContext) {
-          // console.log('schemaHash: ' + requestContext.schemaHash);
-          // console.log('queryHash: ' + requestContext.queryHash);
-          console.log("operation: " + requestContext.errors);
-          //Log the tracing extension data of the response
-          const totalDuration =
-            requestContext.response.extensions.tracing.duration;
-          const resolvers =
-            requestContext.response.extensions.tracing.execution.resolvers;
-          // console.log(resolvers); //this is an array - we expect the length to be 4 with our standard query
+    requestDidStart(context) {
+      console.log('cache plugin fired');
+      const clientQuery = context.request.query;
+      const cq = Object.values(clientQuery);
+        if (cq[11]!=='I'&&cq[12]!=='n'&&cq[13]!=='t'&&cq[14]!=='r'&&cq[15]!=='o'&&cq[16]!=='s'&&cq[17]!=='p'&&cq[18]!=='e') {
+            return {
+                async willSendResponse(requestContext) {
+                    // console.log('schemaHash: ' + requestContext.schemaHash);
+                    // console.log('queryHash: ' + requestContext.queryHash);
+  
+                    console.log('operation: ' + requestContext.errors);
+                    const totalDuration = requestContext.response.extensions.tracing.duration;
+                    
+                    const resolvers = JSON.stringify(requestContext.response.extensions.tracing.execution.resolvers);
+                    const now = Date.now();
+                    const hash = `${now}-${requestContext.queryHash}`
+                    const timeStamp = new Date().toString();
+                    await redis.hset(`${hash}`, 'totalDuration', `${totalDuration}`);
+  
+  
+                    //....queryBreakdown
+                    await redis.hset(`${hash}`, 'clientQuery', `${clientQuery.toString()}`);
+                    await redis.hset(`${hash}`, 'timeStamp', `${timeStamp}`);
+                    await redis.hset(`${hash}`, `resolvers`, `${resolvers}`);
+                    
+                    addEntry(hash);
 
-          const now = Date.now();
-          const hash = `${now}-${requestContext.queryHash}`;
-          const timeStamp = new Date().toString();
-          await redis.hset(`${hash}`, "totalDuration", `${totalDuration}`);
-          await redis.hset(
-            `${hash}`,
-            "clientQuery",
-            `${clientQuery.toString()}`
-          );
+                    updater.totalDuration = totalDuration;
+                    updater.clientQuery = clientQuery;
+                    updater.hash = hash;
+  
+                },
+            };
+        } else return console.log('Introspection Query Fired');
+    }
+  }; 
 
-          //   await redis.hset(`${hash}`, "timeStamp", `${timeStamp}`);
-          //   for (let i = resolvers.length; i > 0; i--) {
-          //     console.log(resolvers[i]);
-          //     await redis.hset(
-          //       `${hash}`,
-          //       `resolver${i}Duration`,
-          //       `${resolvers[i].duration}`
-          //     );
-          //   }
-          //   for (let i = resolvers.length; i > 0; i--) {
-          //     console.log(`index inside loop is ${i}`);
-          //   }
-          await redis.hset(`${hash}`, "resolvers", `${resolvers}`);
-          // console.log('**THIS IS HASH***', hash);
-          addEntry(hash);
-          // timeData.push(hash);
-          // console.log(`timeData = ${timeData}`)
-        },
-      };
-    } else return console.log("Introspection Query Fired");
-  },
-};
+  
 
-module.exports = { redisController, cachePlugin };
+module.exports = { redisController, cachePlugin, updater };
