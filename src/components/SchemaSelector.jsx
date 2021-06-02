@@ -217,10 +217,18 @@ const schemaDisplay = (props) => {
         <span type="text" className="schemaInput">
           Current Schema:
           <br />
-          <span id="currentSchema">{currentSchema}</span>
+          {currentSchema === "" && (
+            <span className="none-selected-text">
+              None selected. Select a schema from the tabs, or add one below
+            </span>
+          )}
+          {currentSchema !== "" && (
+            <span id="currentSchema">{currentSchema}</span>
+          )}
         </span>
-        {currentSchema !== "None Selected" && (
-          <button id="buttonDelete" onClick={handleDelete} >
+
+        {currentSchema !== "" && (
+          <button id="buttonDelete" onClick={handleDelete}>
             Delete
           </button>
         )}
@@ -262,7 +270,7 @@ const schemaDisplay = (props) => {
           onSubmit={(e) => handleFileSubmit(e)}
         >
           <label for="schemaNameFromFile" class="label-text">
-            Schema name:
+            Schema Name:
           </label>
           <input
             type="text"
@@ -270,10 +278,15 @@ const schemaDisplay = (props) => {
             name="schema-name-from-file"
           ></input>
           <label for="myFileId" class="label-text">
-            Select a file:
+            Select a File:
           </label>
           <input type="file" name="myFile" id="myFileId"></input>
-          <button type="submit" value="submit file" id="submitFile">
+          <button
+            type="submit"
+            value="submit file"
+            id="submitFile"
+            onClick={() => console.log("click")}
+          >
             Upload file
           </button>
         </form>

@@ -11,6 +11,10 @@ body {
   position: absolute;
 }
 
+p {
+  margin: 0;
+}
+
 .selector {
   display: grid;
   color: #c3e88d;
@@ -98,7 +102,9 @@ form#mainForm {
   font-family: "Lato", sans-serif;
 }
 
-#schemaNameFromFile, #schemaNameFromDbUri, #dbUri {
+#schemaNameFromFile,
+#schemaNameFromDbUri,
+#dbUri {
   border-radius: 6px;
   border: 1px black solid;
   background-color: #daf5ff;
@@ -112,14 +118,18 @@ form label {
   margin-bottom: 2px;
 }
 
-input, label {
+input,
+label {
   display: block;
 }
 
 .inputDiv {
   align-self: center;
   max-width: 235px;
+  height: 60px;
 }
+
+/* test comment */
 
 .main-container {
   position: relative;
@@ -185,6 +195,8 @@ li {
 
 .schemaInput {
   color: #89ddff;
+  margin: 0;
+  padding: 0;
 }
 
 .schema-button-list {
@@ -340,6 +352,12 @@ div.toolbar button.toolbar-button {
 
 .none-selected-span {
   color: #3b6b7e;
+  margin: 0;
+  padding: 0;
+}
+
+.none-selected-text {
+  color: #c3e88d;
 }
 
 .metrics {
