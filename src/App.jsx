@@ -22,7 +22,7 @@ to the props that GraphiQL can accept: https://github.com/graphql/graphiql/blob/
 */
 
 const App = () => {
-  const [currentSchema, changeCurrentSchema] = useState("None Selected");
+  const [currentSchema, changeCurrentSchema] = useState("");
   //we probably want to give this the relevant data 'starter' object in services.js as its default state - (services[0].label) rather than hard coding this here
   const [schemaList, updateSchemaList] = useState(["SWAPI", "Users"]);
   const [fetchURL, setFetchURL] = useState(
