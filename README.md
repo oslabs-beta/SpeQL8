@@ -20,10 +20,10 @@ ___
 * Profit
 ___
 ## Prerequisites
-Be sure to have postgresql and docker installed on your local machine before attempting to run SpeQL8.
+Be sure to have PostgreSQL and Docker installed on your local machine before attempting to run SpeQL8.
 ___
 ## Built With
-Apollo-Server | Socket.IO | ioredis | Postgraphile | GraphiQL | React | Node.js | Express | Docker-Compose | PSQL
+Apollo-Server | Socket.IO | ioredis | Postgraphile | GraphiQL | React | Node.js | Express | Docker-Compose | PostgreSQL
 
 Thank you!
 ___
