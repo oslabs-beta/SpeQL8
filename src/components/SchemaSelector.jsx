@@ -1,71 +1,21 @@
 import React, { useState, useEffect } from "react";
 const servicesModule = require("../modules/services");
 const services = servicesModule.services;
-//these don't work - will need another solution...
-// const timeDataModule = require('./timeData');
-// const timeData = timeDataModule.timeData;
-// const newServerModule = require('./../newServerInstance');
-// const createNewApolloServer = newServerModule.allanExportTest;
 
 import Heading from "./Heading";
 
 const schemaDisplay = (props) => {
-  // These are the react hooks
-  // const [currentSchema, changeCurrentSchema] = useState("");
   const [input, inputChange] = useState("");
   const [uriInput, changeUri] = useState("");
-  const { currentSchema } = props;
-  const { changeCurrentSchema } = props;
-  const { schemaList } = props;
-  const { updateSchemaList } = props;
-  const { handleQuery } = props;
-  //not getting used - delete?
-  const { fetchURL } = props;
+  const { currentSchema, changeCurrentSchema } = props;
+  const { schemaList, updateSchemaList } = props;
   const { setFetchURL } = props;
-  const { currentPort } = props;
-  const { setCurrentPort } = props;
-
-  useEffect(() => {
-    //this functionality is in useEffect rather than handleQuery due to the async nature of updating state.
-    // let gqlApiString;
-    //   for (let i = 0; i < services.length; i++) {
-    //     if (services[i].label === currentSchema) {
-    //       gqlApiString = `http://localhost:${services[i].port}/graphql`;
-    //       break;
-    //     }
-    //   }
-    //   //this conditional exists to get round a browser console error, it assumes that we'll have at least 1 object in services.js array
-    //   if (schemaList.length > 1) {
-    //   setFetchURL(gqlApiString);
-    // }
-  });
-
-  // These are all the button methods:
-  //TO DO: COME BACK AND REFACTOR
-  // function handleDelete(e) {
-  //   //When we click the delete button we want to do the following:
-  //   //remove the button from the schemaList (where the name corresponds to the currentSchema)
-  //   //reset currentSchema to none selected / blank string
-  //   updateSchemaList(schemaList.filter((el) => {return el !== currentSchema}));
-  //   //you're probably going to want to do the kill port bit before you erase the reference to currentSchema in state
-  //    //kill the node process for the corresponding port specified in the services array where the property
-  //    //'label' matches the schema name - see this article: https://melvingeorge.me/blog/kill-nodejs-process-at-specific-port-linux
-  //   changeCurrentSchema("");
-
-  //    //TBD on this fetch method...was just an idea, not sure if could work.
-  //   // fetch("", {
-  //   //   method: "DELETE",
-  //   // })
-  //   //   .then((res) => res.json())
-  //   //   .then((data) => {})
-  //   //   .catch((err) => console.log(err));
-  // }
+  const { currentPort, setCurrentPort } = props;
 
   function handleDelete(e) {
+    //hard coding back to SWAPI so GraphiQL does not throw an error due to not having a valid fetch URL
     setFetchURL(`http://localhost:${services[0].port}/graphql`);
-    //When we click the delete button we want to do the following:
-    //remove the button from the schemaList (where the name corresponds to the currentSchema)
-    //reset currentSchema to none selected / blank string
+
     fetch(`http://localhost:3333/deleteServer/${currentPort}`, {
       method: "DELETE",
       mode: "cors",
@@ -74,62 +24,37 @@ const schemaDisplay = (props) => {
       },
     }).then((data) => {
       data.json();
-      console.log(data);
     });
     updateSchemaList(
       schemaList.filter((el) => {
         return el !== currentSchema;
       })
     );
-    //you’re probably going to want to do the kill port bit before you erase the reference to currentSchema in state
-    //kill the node process for the corresponding port specified in the services array where the property
-    //‘label’ matches the schema name - see this article: https://melvingeorge.me/blog/kill-nodejs-process-at-specific-port-linux
+
     changeCurrentSchema("");
     setCurrentPort(4000);
-    //TBD on this fetch method...was just an idea, not sure if could work.
-    // fetch(“”, {
-    //   method: “DELETE”,
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {})
-    //   .catch((err) => console.log(err));
   }
 
-  //LINKED TO BUTTON CLICKS FROM SCHEMA BUTTONS
-  // function handleQuery(e) {
-  //     e.preventDefault();
-  //     console.log('here is the handlequery button', e);
-  //     console.log(e.target)
-  //     changeCurrentSchema(e.target.value);
-  // }
-
   function handleDbUri(e) {
-    //add uri from database hear when set up
     changeUri(e.target.value);
-    console.log("this is the value from the db uri box", uriInput);
+    // console.log("this is the value from the db uri box", uriInput);
   }
 
   function handleAdd(e) {
-    console.log("this is the event for the add schema buttton", e);
+    // console.log("this is the event for the add schema buttton", e);
     e.preventDefault();
 
     if (input !== "" && uriInput !== "") {
-      // console.log(timeData);
-      // let lastTimeData = timeData[timeData.length - 1].hash;
-      // console.log(`last time data is ${lastTimeData}`);
-
       let lastAddedPort = services[services.length - 1].port;
-      console.log(`last added port is ${lastAddedPort}`);
+      // console.log(`last added port is ${lastAddedPort}`);
       const newPort = lastAddedPort + 1;
-
       const newService = {
         label: input,
         db_uri: uriInput,
         port: newPort,
       };
-
-      //is this actually working? NO!
       services.push(newService);
+      console.log(services);
 
       fetch("http://localhost:3333/newServer", {
         method: "POST",
@@ -140,18 +65,25 @@ const schemaDisplay = (props) => {
         body: JSON.stringify(newService),
       })
         .then((data) => data.json())
+        //can probably get rid of this .then
         .then((results) => {
-          console.log(
-            "these are the results from the fetch request in the handle add",
-            results
-          );
+          console
+            .log(
+              "these are the results from the fetch request in the handle add",
+              results
+            )
+            .catch((err) => {
+              console.log(err);
+            });
         });
 
       updateSchemaList((prevState) => [...prevState, input]);
       inputChange("");
       changeUri("");
     } else {
-      alert("enter info");
+      alert(
+        "Please ensure 'Schema Name' and 'PostgreSQL URI' fields are populated"
+      );
     }
   }
 
@@ -190,25 +122,7 @@ const schemaDisplay = (props) => {
     }
   }
 
-  //--------------------------------------------------------------------
-
-  // This is to iterate over each schemaList which is the state for the schemaList box and this also renders the buttons for schemaList
-
-  //ALLAN NOTE: Russ, I got rid of the 'list' variable. The map method returns a new array, so no need to create a new array and push into it.
-  //Have also updated the reference to it on line 163
-  // const list = [];
-
-  // const schemaButtonList = schemaList.map((item, index) => {
-  //   // console.log("here's the list")
-  //   //   console.log(list)
-  //   return (
-  //    <li className="schemaList" key={`key${index}`}>{" "}<button id={"schemaList"} value={item} onClick={handleQuery}>{item}</button></li>
-  //   );
-  // });
-
   //---------------------------------------
-
-  // Html and form below
 
   return (
     <div className="selector">
@@ -236,8 +150,8 @@ const schemaDisplay = (props) => {
       <span className="sparkle-hr">✨ ✨ ✨ ✨ ✨</span>
       <div className="mainForm">
         <span id="formText">Run with connection string...</span>
-        <form id="mainForm" class="forms">
-          <label for="schemaNameFromDbUri" className="label-text">
+        <form id="mainForm" className="forms">
+          <label htmlFor="schemaNameFromDbUri" className="label-text">
             Schema Name:
           </label>
           <input
@@ -247,7 +161,7 @@ const schemaDisplay = (props) => {
             id="schemaNameFromDbUri"
             name="schema-name"
           ></input>
-          <label for="dbUri" className="label-text">
+          <label htmlFor="dbUri" className="label-text">
             PostgreSQL URI:
           </label>
           <input
@@ -264,12 +178,12 @@ const schemaDisplay = (props) => {
         <span id="formText">...or upload .sql or .tar file</span>
         <form
           action=""
-          enctype="multipart/form-data"
+          encType="multipart/form-data"
           id="uploadFileForm"
-          class="forms"
+          className="forms"
           onSubmit={(e) => handleFileSubmit(e)}
         >
-          <label for="schemaNameFromFile" class="label-text">
+          <label htmlFor="schemaNameFromFile" className="label-text">
             Schema Name:
           </label>
           <input
@@ -277,7 +191,7 @@ const schemaDisplay = (props) => {
             id="schemaNameFromFile"
             name="schema-name-from-file"
           ></input>
-          <label for="myFileId" class="label-text">
+          <label htmlFor="myFileId" className="label-text">
             Select a File:
           </label>
           <input type="file" name="myFile" id="myFileId"></input>
@@ -294,5 +208,5 @@ const schemaDisplay = (props) => {
     </div>
   );
 };
-// export const SchemaButtons = () => (<ul>{schemaButtonList}</ul>);
+
 export default schemaDisplay;

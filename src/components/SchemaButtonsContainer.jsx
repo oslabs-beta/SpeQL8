@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import SchemaButton from "./SchemaButton";
 
 const SchemaButtonsContainer = (props) => {
@@ -14,7 +14,6 @@ const SchemaButtonsContainer = (props) => {
         onClick={handleQuery}
         value={item}
       />
-      //  <li className="schemaList" key={`key${index}`}>{" "}<button id={"schemaList"} value={item} onClick={handleQuery}>{item}</button></li>
     );
   });
 
