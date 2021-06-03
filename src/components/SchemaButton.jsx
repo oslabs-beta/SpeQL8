@@ -5,8 +5,6 @@ const SchemaButton = (props) => {
 
   return (
     <li className={className}>
-      {/* not sure what this is doing, hesistant to delete */}
-      {/* {" "} */}
       <button className="schema-button" id={id} onClick={onClick}>
         {value}
       </button>

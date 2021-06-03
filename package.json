@@ -4,10 +4,9 @@
   "description": "Speculative GraphQL metrics for your Postgres database",
   "main": "index.jsx",
   "scripts": {
-    "start": "NODE_ENV=production node ./serverio.js",
+    "start": "NODE_ENV=production node ./server.js",
     "build": "NODE_ENV=production webpack",
-    "dev": "NODE_ENV=development webpack serve --open & NODE_ENV=development nodemon ./serverio.js",
-    "speql8": "docker-compose -f docker-compose.yml up"
+    "dev": "NODE_ENV=development webpack serve --open & NODE_ENV=development nodemon ./server.js"
   },
   "author": "Allan MacLean, Ekaterina Vasileva, Russell Hayward, Akiko Hagio Dulaney",
   "license": "MIT",

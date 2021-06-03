@@ -3,7 +3,7 @@ import SchemaButton from "./SchemaButton";
 
 const SchemaButtonsContainer = (props) => {
   const { schemaList } = props;
-  const { handleQuery } = props;
+  const { handleSchemaButtonClick } = props;
 
   const schemaButtonList = schemaList.map((item, index) => {
     return (
@@ -11,7 +11,7 @@ const SchemaButtonsContainer = (props) => {
         className="schema-list-element"
         key={`${index}`}
         id={`schema-button-${index}`}
-        onClick={handleQuery}
+        onClick={handleSchemaButtonClick}
         value={item}
       />
     );
