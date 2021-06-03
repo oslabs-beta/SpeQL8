@@ -67,14 +67,13 @@ const schemaDisplay = (props) => {
         .then((data) => data.json())
         //can probably get rid of this .then
         .then((results) => {
-          console
-            .log(
-              "these are the results from the fetch request in the handle add",
-              results
-            )
-            .catch((err) => {
-              console.log(err);
-            });
+          console.log(
+            "these are the results from the fetch request in the handle add",
+            results
+          );
+        })
+        .catch((err) => {
+          console.log(err);
         });
 
       updateSchemaList((prevState) => [...prevState, input]);
@@ -102,7 +101,7 @@ const schemaDisplay = (props) => {
     if (fileExtension !== ".sql" && fileExtension !== ".tar") {
       alert("please upload .sql or .tar file");
       return;
-    } else if (label.trim() === "" || label ==="") {
+    } else if (label.trim() === "" || label === "") {
       alert("please provide a name for your database");
       return;
     } else {
@@ -116,9 +115,9 @@ const schemaDisplay = (props) => {
         // .then(() => console.log(services))
         .then(() => updateSchemaList((prevState) => [...prevState, label]));
       // .then(() => console.log(schemaList));
-        // .then(() => inputChange(""))
-        // .then(() => changeUri(""));
-        document.getElementById("schemaNameFromFile").value = "";
+      // .then(() => inputChange(""))
+      // .then(() => changeUri(""));
+      document.getElementById("schemaNameFromFile").value = "";
     }
   }
 
