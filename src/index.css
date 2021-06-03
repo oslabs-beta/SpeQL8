@@ -390,13 +390,13 @@ div.toolbar button.toolbar-button {
 }
 
 
-
-
 .chartjs-render-monitor {
-  font-size: 10px !important;
   position: absolute !important;
   bottom: 0px;
+  max-width: calc(100% - 135px);
   margin-left: 135px;
 }
+
+
 
 }
