@@ -1,12 +1,17 @@
-import React from 'react';
-
+import React from "react";
 
 const SchemaButton = (props) => {
-    const {className, key, id, onClick, value} = props;
+  const { className, id, onClick, value } = props;
 
-    return (
-        <li className={className} key={key}>{" "}<button className='schema-button' id={id} onClick={onClick}>{value}</button></li>
-    )
-}
+  return (
+    <li className={className}>
+      {/* not sure what this is doing, hesistant to delete */}
+      {/* {" "} */}
+      <button className="schema-button" id={id} onClick={onClick}>
+        {value}
+      </button>
+    </li>
+  );
+};
 
 export default SchemaButton;

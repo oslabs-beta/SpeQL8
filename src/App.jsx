@@ -157,6 +157,7 @@ const App = () => {
         label: "Time in ms",
         data: [],
         queries: [],
+        cacheTime: [],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -184,8 +185,14 @@ const App = () => {
     tooltips: {
       callbacks: {
         afterLabel: function (tooltipItem, data) {
-          return data.datasets[0].queries[tooltipItem.index];
+          return [
+            data.datasets[0].queries[tooltipItem.index],
+            data.datasets[0].cacheTime[tooltipItem.index],
+          ];
         },
+        // afterLabel: function (tooltipItem, data) {
+        //   return data.datasets[0].cacheTime[tooltipItem.index];
+        // },
       },
     },
     scales: {
@@ -225,6 +232,7 @@ const App = () => {
     const copy = [...testData.datasets];
     copy[0].data = [...copy[0].data, lastQuerySpeed];
     copy[0].queries = [...copy[0].queries, lastQuery];
+    copy[0].cacheTime = [...copy[0].cacheTime, "-"];
 
     setTestData((prevState) =>
       // {...prevState, labels: [...prevState.labels, `Query #${queryNumber}`], datasets: copy}
@@ -239,22 +247,6 @@ const App = () => {
     );
     setQueryNumber(queryNumber + 1);
 
-    //delete if this works
-    //  setDataSet([...dataSet,
-    //   {distance:lastQuerySpeed,
-    //    colors:[
-    //     "#fd1d1d",
-    //     "#833ab4"],
-    //     query: lastQuery,
-    //   }
-    //   ])
-    // setTestData([...testData,
-    // {
-    //   queryNumber: 4,
-    //       'dogs': 3,
-    //       'cats': 7,
-    //       'pets': lastQuerySpeed,
-    // }])
     console.log("testing for handleSaveClick");
   };
 
@@ -266,6 +258,28 @@ const App = () => {
     });
     const responseJson = await response.json();
     console.log(responseJson);
+    const cacheTime = responseJson.cacheTime;
+    const clientQuery = responseJson.clientQuery;
+
+    const copy = [...testData.datasets];
+    // for (let i = 0; i < copy[0].queries.length; i++) {
+    //   console.log(copy[0].queries[i]);
+    //   console.log(copy[0].queries[i] === clientQuery);
+    // }
+
+    copy[0].cacheTime[
+      copy[0].cacheTime.length - 1
+    ] = `Cached Query Response Time: \n${cacheTime} microseconds`;
+
+    setTestData((prevState) =>
+      // {...prevState, labels: [...prevState.labels, `Query #${queryNumber}`], datasets: copy}
+      ({
+        ...prevState,
+        datasets: copy,
+      })
+    );
+
+    // console.log(copy[0].queries.length);
   };
 
   return (

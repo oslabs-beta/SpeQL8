@@ -21,13 +21,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-
 // DYNAMIC SERVER SWITCHING
 app.post("/newServer", (req, res) => {
   console.log("inside the /newServer route");
   console.log(req.body);
-  // services.push(req.body);
-  console.log(services);
+  //please note - logging services on the backend will not be accurate!
+  // console.log(services);
+
   createNewApolloServer(req.body)
     .then((data) => myServers.push(data))
     .catch((err) => console.log(err));
@@ -50,7 +50,6 @@ app.post(
     next();
   },
   async (req, res, next) => {
-
     const promisify = async (cmd) => {
       try {
         const { stdout, stderr } = await exec(cmd);
@@ -78,18 +77,20 @@ app.post(
       label: req.label,
       db_uri: `postgres:///${req.label}`,
       port: port,
-      fromFile: req.file.originalname
+      fromFile: req.file.originalname,
     };
 
-    services.push(newServiceFromFile)
+    services.push(newServiceFromFile);
 
-    console.log('new service', newServiceFromFile);
+    console.log("new service", newServiceFromFile);
 
-    createNewApolloServer(newServiceFromFile)
-      .then(result => myServers.push(result));
+    createNewApolloServer(newServiceFromFile).then((result) =>
+      myServers.push(result)
+    );
     res.locals.service = newServiceFromFile;
     res.status(200).json(res.locals.service);
-  })
+  }
+);
 
 app.delete("/deleteServer/:port", (req, res) => {
   // console.log("***IN DELETE****");
@@ -104,7 +105,7 @@ app.delete("/deleteServer/:port", (req, res) => {
       );
     } else if (server._connectionKey == connectionKey) {
       console.log(`server on ${myPort} is about to be shut down`);
-     await server.close();
+      await server.close();
     } else {
       console.log("nothing got hit!");
     }
@@ -112,27 +113,30 @@ app.delete("/deleteServer/:port", (req, res) => {
   // console.log(services);
 
   services.forEach(async (service, index) => {
-    console.log('in the loop', service.port);
-        if(service.port == myPort) {
-          if(service.fromFile) {
-          try {
-            const { stdout, stderr } = await exec(`dropdb -U postgres ${service.label};`)
-            console.log(stdout);
-            console.log(stderr);
-          } catch (e) {
-            console.error(e);
-          }
-
-          try {
-            fs.unlinkSync(path.resolve(__dirname, `./public/uploads/${service.fromFile}`));
-            // console.log('FILE REMOVED')
-          } catch(err) {
-            console.error(err)
-          }
+    console.log("in the loop", service.port);
+    if (service.port == myPort) {
+      if (service.fromFile) {
+        try {
+          const { stdout, stderr } = await exec(
+            `dropdb -U postgres ${service.label};`
+          );
+          console.log(stdout);
+          console.log(stderr);
+        } catch (e) {
+          console.error(e);
         }
-     services.splice(index, 1);
+
+        try {
+          fs.unlinkSync(
+            path.resolve(__dirname, `./public/uploads/${service.fromFile}`)
+          );
+          // console.log('FILE REMOVED')
+        } catch (err) {
+          console.error(err);
+        }
       }
-  })
+    }
+  });
 
   console.log(services);
 });
@@ -178,6 +182,7 @@ server.listen(3333, () => {
 });
 
 // APOLLO SERVER + POSTGRAPHILE
+// We need some logic in here to handle if the string is malformed. App crashes otherwise.
 const createNewApolloServer = (service) => {
   const pgPool = new pg.Pool({
     //do this via an environment variable
