@@ -64,6 +64,7 @@ const schemaDisplay = (props) => {
         },
         body: JSON.stringify(newService),
       })
+        //at which point do we need to intervene in order not to render a dead button?
         .then((data) => data.json())
         //can probably get rid of this .then
         .then((results) => {
@@ -73,6 +74,7 @@ const schemaDisplay = (props) => {
           );
         })
         .catch((err) => {
+          console.log("DID THIS GET HIT??");
           console.log(err);
         });
 

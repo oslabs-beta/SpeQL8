@@ -263,7 +263,7 @@ const createNewApolloServer = (service) => {
   // CALL APOLLO SERVER FOR GRAPHIQL
   return startApolloServer().catch((e) => {
     console.error(e);
-    process.exit(1);
+    // process.exit(1);
   });
 };
 

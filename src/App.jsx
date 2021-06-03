@@ -55,6 +55,7 @@ const App = () => {
           break;
         } else {
           console.log("did not find a matching label");
+          gqlApiString = "http://localhost:4000/graphql";
         }
       }
       setCurrentPort(port);
