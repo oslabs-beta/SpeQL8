@@ -147,7 +147,6 @@ label {
   text-align: center;
   margin: 0 auto;
   /* margin-top: 10rem; */
-
 }
 
 h4 {
@@ -337,7 +336,7 @@ div.toolbar button.toolbar-button {
 
 .vertical-bar {
   margin: 0 auto;
-  margin-top: 3rem;
+  /* margin-top: 3rem; */
 }
 
 .sparkle-hr {
@@ -364,31 +363,37 @@ div.toolbar button.toolbar-button {
   grid-column: 3/4;
   grid-row: 2/3;
   position: relative;
+  max-width: 500px;
 }
 
 .chartjs-render-monitor {
   max-height: 50vh !important;
-  width: 90vh !important;
+  /* width: 90vh !important; */
   margin: 0 auto;
 }
 
-  @media screen and (max-height: 950px) {
-
+@media screen and (max-height: 950px) {
   .query-speed-box {
-  border: 1px solid #c792ea;
-  height: 171px;
-  width: 100px;
-  text-align: center;
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  font-size: .75rem;
-}
+    border: 1px solid #c792ea;
+    height: 171px;
+    width: 100px;
+    text-align: center;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    font-size: 0.75rem;
+  }
 
-.milliseconds-display {
-  font-size: .75rem;
-}
+  .milliseconds-display {
+    font-size: 0.75rem;
+  }
 
+  .chartjs-render-monitor {
+    font-size: 10px !important;
+    position: absolute !important;
+    bottom: 0px;
+    margin-left: 135px;
+  }
 
 .chartjs-render-monitor {
   position: absolute !important;
