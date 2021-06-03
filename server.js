@@ -1,7 +1,6 @@
 const express = require("express");
 const http = require("http");
-const servicesModule = require("./src/modules/services");
-const services = servicesModule.services;
+
 const pg = require("pg");
 const path = require("path");
 const { ApolloServer } = require("apollo-server-express");
@@ -9,10 +8,13 @@ const { makeSchemaAndPlugin } = require("postgraphile-apollo-server");
 const { ApolloLogPlugin } = require("apollo-log");
 const cors = require("cors");
 const util = require("util");
-const exec = util.promisify(require("child_process").exec);
 const multer = require("multer");
-const upload = multer({ dest: __dirname + "/public/uploads/" });
 const fs = require("fs");
+const servicesModule = require("./src/modules/services");
+const exec = util.promisify(require("child_process").exec);
+
+const { services } = servicesModule;
+const upload = multer({ dest: `${__dirname}/public/uploads/` });
 
 // EXPRESS SERVER + CORS
 const app = express();
@@ -25,9 +27,8 @@ app.use(cors());
 app.post("/newServer", (req, res) => {
   console.log("inside the /newServer route");
   console.log(req.body);
-  //please note - logging services on the backend will not be accurate!
+  // please note - logging services on the backend will not be accurate!
   // console.log(services);
-
   createNewApolloServer(req.body)
     .then((data) => myServers.push(data))
     .catch((err) => console.log(err));
@@ -61,7 +62,6 @@ app.post(
     };
 
     await promisify(`createdb -U postgres '${req.label}'`);
-    let importSQL;
     if (req.fileExtension === ".sql") {
       await promisify(`psql -U postgres -d ${req.label} < '${req.p}'`);
     } else if (req.fileExtension === ".tar") {
@@ -146,7 +146,7 @@ const {
   redisController,
   cachePlugin,
   updater,
-} = require("./redis/redis-commands.js");
+} = require("./redis/redis-commands");
 
 // SOCKET.IO
 const server = http.createServer(app);
@@ -185,7 +185,7 @@ server.listen(3333, () => {
 // We need some logic in here to handle if the string is malformed. App crashes otherwise.
 const createNewApolloServer = (service) => {
   const pgPool = new pg.Pool({
-    //do this via an environment variable
+    // do this via an environment variable
     connectionString: service.db_uri,
   });
 
@@ -201,8 +201,8 @@ const createNewApolloServer = (service) => {
         // watchPg: true,
         graphiql: true,
         graphlqlRoute: "/graphql",
-        //These are not the same!
-        //not using the graphiql route below
+        // These are not the same!
+        // not using the graphiql route below
         graphiqlRoute: "/test",
         enhanceGraphiql: true,
       }
@@ -241,17 +241,15 @@ const createNewApolloServer = (service) => {
     });
 
     // EXPRESS UNKNOWN ROUTE HANDLER
-    app.use("*", (req, res) => {
-      return res.status(404).send("404 Not Found");
-    });
+    app.use("*", (req, res) => res.status(404).send("404 Not Found"));
 
     // EXPRESS GLOBAL ERROR HANDLER
     app.use((err, req, res, next) => {
       console.log(err);
-      return res.status(500).send("Internal Server Error " + err);
+      return res.status(500).send("Internal Server Error ", err);
     });
 
-    //const { url } = await server.listen();
+    // const { url } = await server.listen();
     // accesing via port 8080
     const myApp = app.listen({ port: service.port });
     console.log(
