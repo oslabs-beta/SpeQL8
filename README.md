@@ -16,7 +16,6 @@ ___
 
 * Fork and clone this repository
 * In the SpeQL8 root directory, run the command `npm run speql8`
-* In your browser window, navigate to `http://localhost:3333`
 * ???
 * Profit
 ___
