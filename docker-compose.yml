@@ -4,7 +4,9 @@ services:
     container_name: redis
     image: redis:latest
     command: ["redis-server", "--bind", "redis", "--port", "6379"]
-  app:
+  speql8:
+    container_name: speql8
+    image: speql8:latest
     depends_on:
       - redis
     build: ./
