@@ -7,8 +7,7 @@
 
 ___
 ## About
-SpeQL8 enables you to run GraphQL queries on an existing Postgres database and collect request-response metrics per query.  View and compare query response times from both your database and from a lightning fast Redis cache.
-
+SpeQL8 enables you to run GraphQL queries on an existing Postgres database and collect request-response metrics per query.  View and compare query response times from both your database and from a lightning fast Redis cache, all in the comfort and security of your local development environment.
 
 Upload a .sql or .tar file to spin up your postgres database from SpeQL8 or simply plug in a Postgres database client URL (e.g. ElephantSQL).
 
