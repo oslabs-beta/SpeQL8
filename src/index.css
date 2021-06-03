@@ -394,4 +394,14 @@ div.toolbar button.toolbar-button {
     bottom: 0px;
     margin-left: 135px;
   }
+
+.chartjs-render-monitor {
+  position: absolute !important;
+  bottom: 0px;
+  max-width: calc(100% - 135px);
+  margin-left: 135px;
+}
+
+
+
 }
