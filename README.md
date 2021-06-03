@@ -20,7 +20,7 @@ ___
 * ???
 * Profit
 ___
-## Dependencies
+## Prerequisites
 Be sure to have postgresql and docker installed on your local machine before attempting to run SpeQL8.
 ___
 ## Built With
