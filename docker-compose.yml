@@ -1,5 +1,14 @@
 # docker-compose.yml
 services:
+  postgres:
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=user
+      - POSTGRES_DB=db
+    image: postgres:latest
+    ports:
+      - 5433:5432
   redis:
     container_name: redis
     image: redis:latest

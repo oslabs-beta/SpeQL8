@@ -13,17 +13,25 @@ Upload a .sql or .tar file to spin up your postgres database from SpeQL8 or simp
 
 ___
 ## Get Started With SpeQL8:
+You can either spin up locally on your own machine, or inside a Docker container:
 
+A) Local Install
+* Fork and clone this repository
+* Ensure you have an instance of Redis Server active.
+* Run `npm install && npm build && npm start`
+* Open `localhost:3333`
+
+B) Containerized
 * Fork and clone this repository
 * In the SpeQL8 root directory, run the command `npm run speql8`
-* ???
-* Profit
+* Open `localhost:3333`
+* please note - creating GraphQL API instances from a .sql or .tar file is a forthcoming feature in the containerized version
 ___
 ## Prerequisites
-Be sure to have postgresql and docker installed on your local machine before attempting to run SpeQL8.
+Be sure to have PostgreSQL and Docker installed on your local machine before attempting to run SpeQL8 via Dockerfile. If running locally, you'll need Redis CLI & Redis Server installed.
 ___
 ## Built With
-Apollo-Server | Socket.IO | ioredis | Postgraphile | GraphiQL | React | Node.js | Express | Docker-Compose | PSQL
+[Apollo-Server](https://www.apollographql.com/docs/apollo-server/) | [Socket.IO](https://socket.io) | [ioredis](https://docs.redislabs.com/latest/rs/references/client_references/client_ioredis/) | [Postgraphile](https://www.graphile.org/postgraphile/) | [GraphiQL](https://github.com/graphql/graphiql) | [React](https://reactjs.org) | [Node.js](node.js) | [Express](https://expressjs.com) | [Docker-Compose](https://docs.docker.com/compose/) | [PostgreSQL](https://www.postgresql.org)
 
 Thank you!
 ___
