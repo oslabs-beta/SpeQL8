@@ -56,7 +56,7 @@ const defaultOptions = {
     callbacks: {
       afterLabel: function (tooltipItem, data) {
         return [
-          data.datasets[0].queries[tooltipItem.index],
+          ...data.datasets[0].queries,
           data.datasets[0].cacheTime[tooltipItem.index],
         ];
       },
