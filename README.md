@@ -14,16 +14,17 @@ Upload a .sql or .tar file to spin up your postgres database from SpeQL8 or simp
 ___
 ## Get Started With SpeQL8:
 You can either spin up locally on your own machine, or inside a Docker container:
+
 A) Local Install
 * Fork and clone this repository
 * Ensure you have an instance of Redis Server active.
-* Run npm install && npm build && npm start
-* Open localhost:3333
+* Run `npm install && npm build && npm start`
+* Open `localhost:3333`
 
 B) Containerized
 * Fork and clone this repository
 * In the SpeQL8 root directory, run the command `npm run speql8`
-* Open localhost:3333
+* Open `localhost:3333`
 * please note - creating GraphQL API instances from a .sql or .tar file is a forthcoming feature in the containerized version
 ___
 ## Prerequisites
