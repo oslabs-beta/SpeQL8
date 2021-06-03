@@ -81,7 +81,24 @@ const App = () => {
   const handleSaveClick = () => {
     const copy = [...testData.datasets];
     copy[0].data = [...copy[0].data, lastQuerySpeed];
-    copy[0].queries = [...copy[0].queries, lastQuery];
+    const queryToString = lastQuery;
+    console.log(queryToString);
+    const result = [];
+    let line = "";
+
+    const linebreak = "\n";
+    for (let i = 0; i < queryToString.length; i++) {
+      if (queryToString[i] !== linebreak) {
+        line += queryToString[i];
+      } else {
+        result.push(line);
+        line = "";
+      }
+    }
+    console.log(result);
+
+    // console.log(result);
+    copy[0].queries = result;
     copy[0].cacheTime = [...copy[0].cacheTime, ""];
     setTestData((prevState) => ({
       ...prevState,
